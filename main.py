@@ -16,7 +16,6 @@ from utility.csv_and_excel_writer import (
 from pathlib import Path
 from collections import Counter
 from datetime import datetime
-import xlsxwriter
 
 # ---------- Parsing Logic ----------
 def analyze_log(logfile: Path,
