@@ -1,4 +1,4 @@
-from PySide6.QtWidgets import QMessageBox, QFileDialog, QLineEdit
+from PySide6.QtWidgets import QMessageBox, QFileDialog, QLineEdit, QStatusBar
 from PySide6.QtGui import QDesktopServices
 from PySide6.QtCore import QUrl
 from typing import TYPE_CHECKING
@@ -96,12 +96,24 @@ class HelperMethods:
 
     def browse_save_file_as_helper(
         self,
-        dialog_message: str,
-        line_widget: QLineEdit,
-        file_extension_filter: str,
+        dialog_message: str = "Save File As",
+        statusbar_widget: QStatusBar = None,
+        line_widget: QLineEdit = None,
+        file_extension_filter: str = "",
         filename_placeholder: str = "",
-    ):
-        """Helper for save file dialogs."""
+    ) -> str:
+        """Helper for save file dialogs.
+
+        Args:
+            dialog_message (str, optional): Message for the save file dialog.. Defaults to "Save File As".
+            statusbar_widget (QStatusBar, optional): The status bar widget to show messages in. Defaults to None.
+            line_widget (QLineEdit, optional): The line edit widget to update with the file path. Defaults to None.
+            file_extension_filter (str, optional): File extension filter for the dialog. Defaults to "".
+            filename_placeholder (str, optional): Placeholder filename for the dialog. Defaults to "".
+        
+        Returns:
+            file_path (str): The selected file path
+        """
         try:
             file_name, _ = QFileDialog.getSaveFileName(
                 self.main_window,
@@ -110,11 +122,19 @@ class HelperMethods:
                 filter=file_extension_filter,
             )
             if file_name:
-                line_widget.setText(file_name)
+                if line_widget is not None:
+                    line_widget.setText(file_name)
+                    if statusbar_widget is not None:
+                        statusbar_widget.showMessage(f"File saved as: {file_name}", 5000)
+                else:
+                    if statusbar_widget is not None:
+                        statusbar_widget.showMessage(f"File saved as: {file_name}", 5000)
+                        
+                return file_name
         except Exception as ex:
             message = f"An exception of type {type(ex).__name__} occurred. Arguments: {ex.args!r}"
             QMessageBox.critical(
                 self.main_window,
                 "An exception occurred in browse save file method",
-                message,
+                message
             )

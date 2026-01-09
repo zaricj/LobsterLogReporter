@@ -11,7 +11,17 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>MainWindow</string>
+   <string>Lobster Log Reporter</string>
+  </property>
+  <property name="windowIcon">
+   <iconset resource="../../qrc/LobsterLogReporter.qrc">
+    <normaloff>:/media/icon/app-icon.ico</normaloff>:/media/icon/app-icon.ico</iconset>
+  </property>
+  <property name="iconSize">
+   <size>
+    <width>64</width>
+    <height>64</height>
+   </size>
   </property>
   <widget class="QWidget" name="centralwidget">
    <layout class="QVBoxLayout" name="verticalLayout">
@@ -459,7 +469,7 @@
   <widget class="QStatusBar" name="statusbar"/>
  </widget>
  <resources>
-  <include location="../../../../../RegexFileSearcher/src/resources/ui/qrc/LogSearcher_resource.qrc"/>
+  <include location="../../qrc/LobsterLogReporter.qrc"/>
  </resources>
  <connections/>
 </ui>

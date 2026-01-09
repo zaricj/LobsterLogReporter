@@ -76,6 +76,30 @@ class MainWindow(QMainWindow, Mixin):
         self.initialize_ui_all() # From Mixin class
         self.ui_state_manager.initial_ui_state_on_start()
         
+        # Application settings
+        self.settings = QSettings("Jovan", "LobsterLogReporterApp")
+        
+        # Load initial application's settings
+        self.load_app_settings()
+        
+    def load_app_settings(self) -> None:
+        """Load application settings from QSettings."""
+        # Restore geometry safely
+        restore_window_state(self, self.settings)
+        self.ui.statusbar.showMessage("Application settings loaded.", 5000) # Shows message in statusbar
+        
+        # Helper method to save apps settings in a more DRY way
+    def save_app_settings(self) -> None:
+        """Save application settings to QSettings."""
+        save_window_state(self, self.settings) # Save windows location and state
+        self.settings.sync()  # optional: force write to disk
+        
+    def closeEvent(self, event: QCloseEvent) -> None:
+        """Handle application close event to save settings."""
+        self.save_app_settings()
+        event.accept()  # Accept the event to close the application
+        
+        
 if __name__ == "__main__":
     app = QApplication(sys.argv)
     window = MainWindow()

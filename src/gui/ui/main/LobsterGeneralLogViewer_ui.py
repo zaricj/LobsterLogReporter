@@ -21,12 +21,17 @@ from PySide6.QtWidgets import (QApplication, QComboBox, QFrame, QGroupBox,
     QPushButton, QRadioButton, QSizePolicy, QSplitter,
     QStatusBar, QTableView, QTextEdit, QTreeView,
     QVBoxLayout, QWidget)
+import gui.qrc.LobsterLogReporter_rc
 
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         if not MainWindow.objectName():
             MainWindow.setObjectName(u"MainWindow")
         MainWindow.resize(1071, 824)
+        icon = QIcon()
+        icon.addFile(u":/media/icon/app-icon.ico", QSize(), QIcon.Mode.Normal, QIcon.State.Off)
+        MainWindow.setWindowIcon(icon)
+        MainWindow.setIconSize(QSize(64, 64))
         self.centralwidget = QWidget(MainWindow)
         self.centralwidget.setObjectName(u"centralwidget")
         self.verticalLayout = QVBoxLayout(self.centralwidget)
@@ -95,15 +100,15 @@ class Ui_MainWindow(object):
 
         self.button_refresh_configuration = QPushButton(self.widget_configuration)
         self.button_refresh_configuration.setObjectName(u"button_refresh_configuration")
-        icon = QIcon(QIcon.fromTheme(QIcon.ThemeIcon.ViewRefresh))
-        self.button_refresh_configuration.setIcon(icon)
+        icon1 = QIcon(QIcon.fromTheme(QIcon.ThemeIcon.ViewRefresh))
+        self.button_refresh_configuration.setIcon(icon1)
 
         self.horizontalLayout_2.addWidget(self.button_refresh_configuration)
 
         self.button_pattern_configuration_info = QPushButton(self.widget_configuration)
         self.button_pattern_configuration_info.setObjectName(u"button_pattern_configuration_info")
-        icon1 = QIcon(QIcon.fromTheme(QIcon.ThemeIcon.HelpAbout))
-        self.button_pattern_configuration_info.setIcon(icon1)
+        icon2 = QIcon(QIcon.fromTheme(QIcon.ThemeIcon.HelpAbout))
+        self.button_pattern_configuration_info.setIcon(icon2)
 
         self.horizontalLayout_2.addWidget(self.button_pattern_configuration_info)
 
@@ -209,8 +214,8 @@ class Ui_MainWindow(object):
         self.horizontalLayout_4.setObjectName(u"horizontalLayout_4")
         self.button_import_csv = QPushButton(self.groupBox_parsed_data_result)
         self.button_import_csv.setObjectName(u"button_import_csv")
-        icon2 = QIcon(QIcon.fromTheme(QIcon.ThemeIcon.InsertLink))
-        self.button_import_csv.setIcon(icon2)
+        icon3 = QIcon(QIcon.fromTheme(QIcon.ThemeIcon.InsertLink))
+        self.button_import_csv.setIcon(icon3)
 
         self.horizontalLayout_4.addWidget(self.button_import_csv)
 
@@ -297,7 +302,7 @@ class Ui_MainWindow(object):
     # setupUi
 
     def retranslateUi(self, MainWindow):
-        MainWindow.setWindowTitle(QCoreApplication.translate("MainWindow", u"MainWindow", None))
+        MainWindow.setWindowTitle(QCoreApplication.translate("MainWindow", u"Lobster Log Reporter", None))
         self.verticalGroupBox_information.setTitle(QCoreApplication.translate("MainWindow", u"Information", None))
         self.label_pattern_configuration.setText(QCoreApplication.translate("MainWindow", u"Pattern Configuration:", None))
 #if QT_CONFIG(tooltip)

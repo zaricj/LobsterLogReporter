@@ -64,3 +64,8 @@ class Mixin:
     def initialize_views(self):
         self.dir_viewer = DirectoryViewer(self) # Init the tree view model object
         self.table_results = ResultsTableWidget(self)
+        
+    @Slot(str, int)
+    def handle_export_status_message(self, message: str, duration: int) -> None:
+        """Handle status bar messages from export operations."""
+        self.ui.statusbar.showMessage(message, duration)
