@@ -9,7 +9,7 @@ from PySide6.QtWidgets import (
     QDialog,
     QSplitter)
 
-from PySide6.QtGui import QIcon, QCloseEvent, QGuiApplication, QAction
+from PySide6.QtGui import QIcon, QCloseEvent, QGuiApplication, QAction, QPixmap
 from PySide6.QtCore import (
     Qt,
     QFile,
@@ -36,6 +36,7 @@ DEFAULT_THEME_FILE_PATH: Path = ROOT_DIR / "gui" / "styles" / "default.qss"
 APP_VERSION: str = "v0.0.1"
 APP_NAME: str = "LobsterLogReportViewer"
 AUTHOR: str = "Jovan"
+APP_ICON: Path = ROOT_DIR / "gui" / "media" / "image" "app-icon.png"
 
 # ----------------------------
 # Helpers for window state
@@ -95,16 +96,20 @@ class MainWindow(QMainWindow, Mixin):
         self.setWindowTitle(f"{APP_NAME} {APP_VERSION}")
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
-        self.thread_pool = QThreadPool() # Thread pool
-        self.initialize_ui_all() # From Mixin class
-        self.ui_state_manager.initial_ui_state_on_start()
         
         # Application settings
         self.settings = QSettings("Jovan", "LobsterLogReporterApp")
         
         # Initialize theme/style for application
-        #initialize_theme(parent=self, theme_file_path=DEFAULT_THEME_FILE_PATH.__str__())
+        # initialize_theme(parent=self, theme_file_path=DEFAULT_THEME_FILE_PATH.__str__())
         
+        self.app_icon: str = APP_ICON.__str__()
+        self.thread_pool: QThreadPool = QThreadPool() # Thread pool
+        
+        self.initialize_ui_all() # From Mixin class
+        self.ui_state_manager.initial_ui_state_on_start()
+        
+
         # Load initial application's settings
         self.load_app_settings()
         

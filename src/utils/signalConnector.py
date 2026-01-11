@@ -13,6 +13,7 @@ class SignalConnector:
         self.main_window = main_window
         self.ui = main_window.ui
         
-    def connect_table_data_exporter(self, worker: ExportManager):
+    def connect_export_manager_signals(self, worker: ExportManager):
         """Connect signals for XML parsing operations."""
         worker.signals.statusbar_message.connect(self.main_window.handle_export_status_message)
+        worker.signals.export_success.connect(self.main_window.handle_export_manager_success)

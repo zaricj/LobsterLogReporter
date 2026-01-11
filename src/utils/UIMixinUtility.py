@@ -1,7 +1,7 @@
 from pathlib import Path
 from PySide6.QtWidgets import QMessageBox
-from PySide6.QtGui import QIcon
-from PySide6.QtCore import Slot, QSettings
+from PySide6.QtGui import QPixmap, QIcon, QDesktopServices
+from PySide6.QtCore import Slot, QSettings, QUrl
 
 from gui.ui.main.LobsterGeneralLogViewer_ui import Ui_MainWindow
 from gui.models.treeViewModel import DirectoryViewer
@@ -69,3 +69,42 @@ class Mixin:
     def handle_export_status_message(self, message: str, duration: int) -> None:
         """Handle status bar messages from export operations."""
         self.ui.statusbar.showMessage(message, duration)
+        
+    @Slot(str, str, str, str)
+    def handle_export_manager_success(self, title: str, message: str, save_as_path: str, app_icon_path: str):
+        """Enhanced success handler with 'Open Folder' button"""
+        app_icon = QIcon(app_icon_path)
+        app_icon_as_pixmap = QPixmap(app_icon_path)
+        msg_box = QMessageBox()
+        
+        msg_box.setIconPixmap(app_icon_as_pixmap)
+        msg_box.setWindowIcon(app_icon)
+        msg_box.setWindowTitle(title)
+        msg_box.setText(message)
+        msg_box.setInformativeText(f"File saved to:\n{save_as_path}")
+        
+        # Add custom buttons
+        open_folder_btn = msg_box.addButton(
+            "Open Folder", 
+            QMessageBox.ButtonRole.ActionRole)
+        
+        open_file_btn = msg_box.addButton(
+            "Open File", 
+            QMessageBox.ButtonRole.ActionRole)
+        
+        ok_btn = msg_box.addButton(QMessageBox.StandardButton.Ok)
+
+        # Set OK as default
+        msg_box.setDefaultButton(ok_btn)
+
+        # Execute dialog and handle response
+        msg_box.exec()
+        
+        clicked_button = msg_box.clickedButton()
+        if clicked_button == open_folder_btn:
+            # Open the folder containing the file
+            folder_path = str(Path(save_as_path).parent)
+            QDesktopServices.openUrl(QUrl.fromLocalFile(folder_path))
+        elif clicked_button == open_file_btn:
+            # Open the file directly
+            QDesktopServices.openUrl(QUrl.fromLocalFile(save_as_path))
