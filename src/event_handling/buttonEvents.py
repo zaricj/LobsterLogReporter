@@ -3,6 +3,12 @@ import pandas as pd
 from PySide6.QtCore import Slot
 from PySide6.QtWidgets import QFileDialog, QMessageBox, QListWidget, QTextEdit
 from typing import TYPE_CHECKING
+from pathlib import Path
+
+from gui.models.tableViewModel import ResultsTableWidget
+from core.exportManager import ExportManager
+from core.fileParser import FileParserWorker
+from utils.signalConnector import SignalConnector
 
 
 if TYPE_CHECKING:
@@ -91,7 +97,14 @@ class ButtonEventHandler:
 
     @Slot()
     def on_parse_files(self) -> None:
-        pass
+        log_file = [Path(r"C:\Users\Jovan\Downloads\sample.log")]
+        
+        file_parser = FileParserWorker(self.main_window, log_file, None)
+        signal_connector = SignalConnector(self.main_window)
+        signal_connector.connect_file_parser_worker(file_parser)
+        self.main_window.thread_pool.start(file_parser)
+        
+        
 
     # === Table Widget Events ===
 
@@ -131,10 +144,6 @@ class ButtonEventHandler:
 
     def on_export_data(self) -> None:
         try:
-            from gui.models.tableViewModel import ResultsTableWidget
-            from core.exportManager import ExportManager
-            from utils.signalConnector import SignalConnector
-
             model = self.ui.table_view_result.model()
 
             if model is None:
@@ -161,8 +170,8 @@ class ButtonEventHandler:
                     return  # User cancelled the save dialog
                 else:
                     exporter = ExportManager()
-                    signal_connector = SignalConnector(self.main_window)
-                    signal_connector.connect_table_data_exporter(exporter)
+                    signal_connector = SignalConnector(self.main_window) # Init thread signal connector
+                    signal_connector.connect_table_data_exporter(exporter) # Connect signal to exporter thread
                     exporter.export_to_csv(df, file_path, ",")
                     self.main_window.thread_pool.start(exporter)
 

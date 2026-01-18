@@ -9,11 +9,12 @@ from gui.models.tableViewModel import ResultsTableWidget
 
 # Path configuration (for pattern handler mainly)
 FILE_DIR = Path(__file__).resolve()
-ROOT_DIR = FILE_DIR.parents[1] # src Folder
+ROOT_DIR = FILE_DIR.parents[1]  # src Folder
 GUI_PATTERN_DIRECTORY: Path = ROOT_DIR / "patterns"
 GUI_PATTERN_FILE_PATH: Path = GUI_PATTERN_DIRECTORY / "patterns.json"
 GUI_PATTERN_DIRECTORY,
 GUI_PATTERN_FILE_PATH
+
 
 class Mixin:
     """
@@ -26,7 +27,7 @@ class Mixin:
     # ui_state_manager: 'UIStateManager'
     settings: 'QSettings'
     set_max_threads: int
-    
+
     def initialize_ui_all(self):
         """Initialize all utilities, handlers, ui signals etc...
         """
@@ -34,38 +35,54 @@ class Mixin:
         self.initialize_utilities()    # Initialize utilities first
         self.initialize_handlers()     # Then handlers (which depend on utilities)
         self.initialize_handler_signals()   # Finally connect signals
-        
+
     def initialize_handlers(self):
         """Initialize all specialized event handlers."""
         from event_handling.buttonEvents import ButtonEventHandler
         from event_handling.comboboxEvents import ComboBoxEventHandler
         from event_handling.lineEditEvents import LineEditHandler
-        
+
         self.button_handler = ButtonEventHandler(self)
         self.combobox_handler = ComboBoxEventHandler(self)
         self.line_edit_handler = LineEditHandler(self)
-        
+
     def initialize_handler_signals(self):
         self.button_handler.connect_signals()
         self.combobox_handler.connect_signals()
         self.line_edit_handler.connect_signals()
-        
+
     def initialize_utilities(self):
         from utils.UIStateManager import UIStateManager
         from utils.helperUtility import HelperMethods
         from utils.patternHandler import PatternHandler
-        
+
         self.helper = HelperMethods(self)
         self.ui_state_manager = UIStateManager(self)
         self.pattern_handler = PatternHandler(self,
-            GUI_PATTERN_DIRECTORY,
-            GUI_PATTERN_FILE_PATH)
+                                              GUI_PATTERN_DIRECTORY,
+                                              GUI_PATTERN_FILE_PATH)
 
     def initialize_views(self):
-        self.dir_viewer = DirectoryViewer(self) # Init the tree view model object
+        # Init the tree view model object
+        self.dir_viewer = DirectoryViewer(self)
         self.table_results = ResultsTableWidget(self)
-        
+
     @Slot(str, int)
-    def handle_export_status_message(self, message: str, duration: int) -> None:
-        """Handle status bar messages from export operations."""
+    def handle_statusbar_show_message(self, message: str, duration: int) -> None:
+        """ Handler for QStatusbar showMessage signals.
+
+        Args:
+            message (str): The message to be shown in the statusbar.
+            duration (int): The duration of the message in milliseconds.
+        """
         self.ui.statusbar.showMessage(message, duration)
+
+    @Slot(str)
+    def handle_text_edit_append(self, message: str) -> None:
+        """Handler for QTextEdit append signals.
+
+        Args:
+            message (str): The message to display in the QTextEdit.
+        """
+
+        self.ui.text_edit_program_output.append(message)

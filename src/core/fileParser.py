@@ -1,16 +1,87 @@
-from PySide6.QtCore import Signal, QThread
+from ast import List
+from PySide6.QtCore import Signal, QThread, Slot, QObject, QRunnable
+import re
+from typing import TYPE_CHECKING
+from pathlib import Path
 
-class FileParserWorker(QThread):
-    """Worker thread for log parsing"""
+if TYPE_CHECKING:
+    from app import MainWindow
+    
+class RegexCompilerSignals(QObject):
+    pass
+
+class RegexCompilerWorker(QRunnable):
+    """Worker thread for managing regex stuff"""
+
+    def __init__(self, main_window: 'MainWindow'):
+        super().__init__()
+        self.main_window = main_window
+        
+    def run():
+        pass
+    
+    def compile_regex(self, pattern: str):
+        """Compiles regex string to a pattern object
+
+        Args:
+            pattern (str): The regex string to compile
+
+        Returns:
+            Pattern[AnyStr@compile]: Regex pattern object
+        """
+        return re.compile(pattern)
+    
+    def compile_regex_dictionary(self, pattern_dict: dict):
+        return {
+            name: re.compile(pattern, re.MULTILINE | re.DOTALL)
+            for name, pattern in pattern_dict.items()
+        }
+    
+class FileParserSignals(QObject):
     progress_updated = Signal(int, str)
     parsing_complete = Signal(list, dict)
-    
-    def __init__(self, log_files, patterns):
+    set_text_output = Signal(str)
+
+
+class FileParserWorker(QRunnable):
+    """Worker thread for log parsing"""
+
+    def __init__(self, main_window: 'MainWindow', log_files: list[Path] = None, patterns: list[str] = None):
         super().__init__()
         self.log_files = log_files
         self.patterns = patterns
-    
+        self.main_window = main_window
+        self.ui = main_window.ui
+        self.signals = FileParserSignals()
+        
+        
     def run(self):
-        # Integrate your existing parsing logic here
-        # Emit progress signals during processing
-        pass
+        self.test()
+    
+    def test(self) -> None:
+        for file in self.log_files:
+            dict_obj: dict = self.read_file_line_by_line(file)
+        
+            # Read dictionary
+            for key, value in dict_obj.items():
+                output_line: str = f"{key}: {value}"
+
+                self.signals.set_text_output.emit(output_line)
+    
+    @Slot(str)
+    def read_file(self, file: Path) -> str:
+        with open(file, "r") as f:
+            content = f.read()
+        return content
+    
+    @Slot(str)
+    def read_file_line_by_line(self, file: Path) -> dict:
+        lines_dict: dict = {}  
+
+        with open(file, "r") as f:
+            lines = f.readlines() # Read lines
+            
+            for index, line in enumerate(lines, 0):
+                lines_dict[index] = line
+
+        return lines_dict
