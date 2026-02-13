@@ -21,15 +21,12 @@ class SignalConnector:
 
     def connect_export_manager_signals(self, worker: "ExportManager"):
         """Connect signals for XML parsing operations."""
-        worker.signals.statusbar_message.connect(
-            self.handle_statusbar_show_message)
-        worker.signals.export_success.connect(
-            self.handle_export_manager_success)
+        worker.signals.statusbar_message.connect(self.handle_statusbar_show_message)
+        worker.signals.export_success.connect(self.handle_export_manager_success)
 
     def connect_file_parser_worker(self, worker: "FileParserWorker"):
         """Connect signals for file parsing operations."""
-        worker.signals.output_text_edit_append.connect(
-            self.handle_text_edit_append)
+        worker.signals.output_text_edit_append.connect(self.handle_text_edit_append)
 
     # ====== Slots ====== #
 
@@ -54,7 +51,9 @@ class SignalConnector:
         self.ui.text_edit_program_output.append(message)
 
     @Slot(str, str, str, str)
-    def handle_export_manager_success(self, title: str, message: str, save_as_path: str, app_icon_path: str):
+    def handle_export_manager_success(
+        self, title: str, message: str, save_as_path: str, app_icon_path: str
+    ):
         """Enhanced success handler with 'Open Folder' button"""
 
         app_icon = QIcon(app_icon_path)
@@ -69,9 +68,11 @@ class SignalConnector:
 
         # Add custom buttons
         open_folder_btn = msg_box.addButton(
-            "Open Folder", QMessageBox.ButtonRole.ActionRole)
+            "Open Folder", QMessageBox.ButtonRole.ActionRole
+        )
         open_file_btn = msg_box.addButton(
-            "Open File", QMessageBox.ButtonRole.ActionRole)
+            "Open File", QMessageBox.ButtonRole.ActionRole
+        )
         ok_btn = msg_box.addButton(QMessageBox.StandardButton.Ok)
 
         # Set OK as default

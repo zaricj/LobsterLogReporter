@@ -1,9 +1,9 @@
 from pathlib import Path
-import os
+
 
 def main() -> None:
     """Replace str 'import LobsterLogReporter_rc' with 'import gui.qrc.LobsterLogReporter_rc' in the file D:/GitHub/LobsterLogReporter/src/gui/ui/main/LobsterGeneralLogViewer_ui.py
-    
+
     Returns:
         None: Nothing :)
     """
@@ -15,13 +15,15 @@ def main() -> None:
 
     def read_file_lines(filepath: str) -> list[str]:
         path: Path = Path(filepath)
-        
+
         with open(file=path, mode="r", encoding="UTF-8") as file:
             lines = file.readlines()
-            
+
         return lines
 
-    def replace_line(lines: list[str], to_replace_str = TO_REPLACE_STR, replace_str = REPLACE_STR) -> list[str]:
+    def replace_line(
+        lines: list[str], to_replace_str=TO_REPLACE_STR, replace_str=REPLACE_STR
+    ) -> list[str]:
         modified_lines = []
         for line in lines:
             if to_replace_str in line:
@@ -39,6 +41,7 @@ def main() -> None:
     file_lines = read_file_lines(PATH)
     modified_lines = replace_line(file_lines)
     write_file_lines(PATH, modified_lines)
-    
+
+
 if __name__ == "__main__":
     main()

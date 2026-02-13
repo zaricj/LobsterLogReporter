@@ -17,7 +17,7 @@ if TYPE_CHECKING:
 
 
 class ButtonEventHandler:
-    def __init__(self, main_window: 'MainWindow'):
+    def __init__(self, main_window: "MainWindow"):
         self.main_window = main_window
         self.ui = main_window.ui
 
@@ -36,13 +36,17 @@ class ButtonEventHandler:
         self.ui.button_clear_table.clicked.connect(self.on_clear_table)
         self.ui.button_parse_files.clicked.connect(self.on_parse_files)
         self.ui.button_export.clicked.connect(self.on_export_data)
-        self.ui.button_pattern_configuration_info.clicked.connect(self.on_pattern_config_info)
+        self.ui.button_pattern_configuration_info.clicked.connect(
+            self.on_pattern_config_info
+        )
 
     @Slot()
     def on_pattern_config_info(self) -> None:
         output_widget: QTextEdit = self.ui.text_edit_program_output
         selected_key = self.ui.combobox_configuration.currentText()
-        selected_data = self.main_window.log_pattern_handler.get(f"profiles.{selected_key}")
+        selected_data = self.main_window.log_pattern_handler.get(
+            f"profiles.{selected_key}"
+        )
         if not selected_data:
             selected_data = self.main_window.log_pattern_handler.get(selected_key)
 
@@ -83,7 +87,9 @@ class ButtonEventHandler:
     def on_parse_files(self) -> None:
         folder_path_raw = self.ui.input_browse_folder.text().strip()
         if not folder_path_raw:
-            QMessageBox.warning(self.main_window, "Parse Logs", "Please select a folder first.")
+            QMessageBox.warning(
+                self.main_window, "Parse Logs", "Please select a folder first."
+            )
             return
 
         folder_path = Path(folder_path_raw)
@@ -97,7 +103,7 @@ class ButtonEventHandler:
 
         file_patterns = self._parse_file_patterns(self.ui.input_file_pattern.text())
         selected_profile = self.ui.combobox_configuration.currentText().strip() or None
-        
+
         self.ui.progressbar.setVisible(True)
         self.ui.progressbar.setRange(0, 100)
         self.ui.progressbar.setValue(0)
@@ -161,7 +167,9 @@ class ButtonEventHandler:
         excel_checked = self.ui.radiobutton_excel.isChecked()
 
         if not csv_checked and not excel_checked:
-            QMessageBox.warning(self.main_window, "Export", "Please select CSV or Excel.")
+            QMessageBox.warning(
+                self.main_window, "Export", "Please select CSV or Excel."
+            )
             return
 
         if csv_checked:
@@ -183,7 +191,7 @@ class ButtonEventHandler:
                 return
             worker = Worker(export_to_excel, dataframe.copy(), save_as_path)
 
-        self.ui.button_export.setEnabled(False) # Disable the export button
+        self.ui.button_export.setEnabled(False)  # Disable the export button
         worker.signals.result.connect(self.on_export_success)
         worker.signals.error.connect(self.on_worker_error)
         worker.signals.finished.connect(self.on_export_finished)
@@ -202,7 +210,9 @@ class ButtonEventHandler:
     @Slot(tuple)
     def on_worker_error(self, error_data: tuple) -> None:
         _exctype, value, traceback_text = error_data
-        QMessageBox.critical(self.main_window, "Background Task Error", f"{value}\n\n{traceback_text}")
+        QMessageBox.critical(
+            self.main_window, "Background Task Error", f"{value}\n\n{traceback_text}"
+        )
         self.ui.statusbar.showMessage("Background task failed.", 10000)
 
     @Slot(pd.DataFrame)
@@ -214,11 +224,13 @@ class ButtonEventHandler:
         model = ResultsTableWidget(data)
         self.ui.table_view_result.setModel(model)
         self.ui.table_view_result.resizeColumnsToContents()
-        self.ui.table_view_result.setSortingEnabled(False) # Disable sorting via headers/columns
+        self.ui.table_view_result.setSortingEnabled(
+            False
+        )  # Disable sorting via headers/columns
 
     def _render_parse_summary(self, result: ParseLogsResult) -> None:
         output = self.ui.text_edit_program_output
-        output.clear() # Clear text area
+        output.clear()  # Clear text area
         output.append(f"Pattern profile: {result.pattern_profile}")
         output.append(f"Processed files: {result.files_processed}")
         output.append(f"Parsed entries: {result.summary.get('total_entries', 0)}")
@@ -226,7 +238,9 @@ class ButtonEventHandler:
         exception_counts = result.summary.get("exceptions", {})
         if isinstance(exception_counts, dict) and exception_counts:
             output.append("Exception summary:")
-            for key, count in sorted(exception_counts.items(), key=lambda item: item[1], reverse=True):
+            for key, count in sorted(
+                exception_counts.items(), key=lambda item: item[1], reverse=True
+            ):
                 output.append(f"  {key}: {count}")
 
     def _get_current_dataframe(self) -> pd.DataFrame | None:

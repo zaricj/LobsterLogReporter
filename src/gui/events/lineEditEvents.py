@@ -8,7 +8,7 @@ if TYPE_CHECKING:
 
 
 class LineEditHandler:
-    def __init__(self, main_window: 'MainWindow'):
+    def __init__(self, main_window: "MainWindow"):
         self.main_window = main_window
         self.ui = main_window.ui
 
@@ -16,7 +16,8 @@ class LineEditHandler:
         """Connect all line edit events to their handlers."""
         # Input field for searching specific file patterns
         self.ui.input_file_pattern.textChanged.connect(
-            lambda: self.set_file_pattern(self.ui.input_browse_folder.text()))
+            lambda: self.set_file_pattern(self.ui.input_browse_folder.text())
+        )
         self.ui.input_filter_table.textChanged.connect(self.on_filter_table)
 
     @Slot(str)
@@ -30,28 +31,33 @@ class LineEditHandler:
         path: Path = Path(folder_path)
 
         if path.exists() and path.is_dir() and input_field_text != ".":
-
             files = []
             file_patterns = input_field_text.strip().split(",")
             # Fixed: Check if file_patterns is not empty and contains valid patterns
-            if file_patterns and file_patterns != ['']:
+            if file_patterns and file_patterns != [""]:
                 self.ui.text_edit_program_output.setText(
-                    f"Using file patterns: {file_patterns}")
+                    f"Using file patterns: {file_patterns}"
+                )
 
                 for pattern in file_patterns:
                     pattern = pattern.strip()
                     if pattern:
                         files.extend(path.glob(pattern))
                         self.ui.text_edit_program_output.setText(
-                            f"Pattern '{pattern}' matched {len(list(path.glob(pattern)))} files.")
+                            f"Pattern '{pattern}' matched {len(list(path.glob(pattern)))} files."
+                        )
                 if len(files) > 0:
                     self.ui.statusbar.showMessage(
-                        f"Selected folder: {folder_path} | Total files: {len(files)} | Using patterns: {file_patterns}", 10000)
+                        f"Selected folder: {folder_path} | Total files: {len(files)} | Using patterns: {file_patterns}",
+                        10000,
+                    )
             else:
-                files = list(path.glob('*.*'))
+                files = list(path.glob("*.*"))
                 if len(files) > 0:
                     self.ui.statusbar.showMessage(
-                        f"Selected folder: {folder_path} | Total files: {len(files)}", 10000)
+                        f"Selected folder: {folder_path} | Total files: {len(files)}",
+                        10000,
+                    )
 
     @Slot(str)
     def on_filter_table(self, text: str):

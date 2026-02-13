@@ -1,8 +1,10 @@
 from PySide6.QtCore import QAbstractTableModel, Qt
 import pandas as pd
 
+
 class ResultsTableWidget(QAbstractTableModel):
     """A lightweight model to display a pandas DataFrame in a QTableView."""
+
     def __init__(self, df: pd.DataFrame):
         super().__init__()
         self.dataframe = df

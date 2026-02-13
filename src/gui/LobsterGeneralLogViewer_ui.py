@@ -3,7 +3,7 @@
 ################################################################################
 ## Form generated from reading UI file 'LobsterGeneralLogViewer.ui'
 ##
-## Created by: Qt User Interface Compiler version 6.10.1
+## Created by: Qt User Interface Compiler version 6.10.2
 ##
 ## WARNING! All changes made in this file will be lost when recompiling UI file!
 ################################################################################
@@ -29,7 +29,10 @@ class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         if not MainWindow.objectName():
             MainWindow.setObjectName(u"MainWindow")
-        MainWindow.resize(1103, 860)
+        MainWindow.resize(1199, 907)
+        font = QFont()
+        font.setPointSize(12)
+        MainWindow.setFont(font)
         icon = QIcon()
         icon.addFile(u":/icons/app-icon.ico", QSize(), QIcon.Mode.Normal, QIcon.State.Off)
         MainWindow.setWindowIcon(icon)
@@ -76,9 +79,9 @@ class Ui_MainWindow(object):
         self.verticalGroupBox_information.setObjectName(u"verticalGroupBox_information")
         self.verticalGroupBox_information.setFlat(False)
         self.verticalLeftLogView = QVBoxLayout(self.verticalGroupBox_information)
-        self.verticalLeftLogView.setSpacing(3)
+        self.verticalLeftLogView.setSpacing(6)
         self.verticalLeftLogView.setObjectName(u"verticalLeftLogView")
-        self.verticalLeftLogView.setContentsMargins(3, 3, 3, 3)
+        self.verticalLeftLogView.setContentsMargins(4, 5, 4, 3)
         self.text_edit_program_output = QTextEdit(self.verticalGroupBox_information)
         self.text_edit_program_output.setObjectName(u"text_edit_program_output")
         self.text_edit_program_output.setMinimumSize(QSize(0, 0))
@@ -100,9 +103,9 @@ class Ui_MainWindow(object):
         self.widget_configuration.setObjectName(u"widget_configuration")
         self.widget_configuration.setMaximumSize(QSize(16777215, 16777215))
         self.verticalLayout_3 = QVBoxLayout(self.widget_configuration)
-        self.verticalLayout_3.setSpacing(3)
+        self.verticalLayout_3.setSpacing(6)
         self.verticalLayout_3.setObjectName(u"verticalLayout_3")
-        self.verticalLayout_3.setContentsMargins(3, 1, 3, 3)
+        self.verticalLayout_3.setContentsMargins(9, 0, 9, 3)
         self.horizontalLayout_2 = QHBoxLayout()
         self.horizontalLayout_2.setObjectName(u"horizontalLayout_2")
         self.label_pattern_configuration = QLabel(self.widget_configuration)
@@ -157,6 +160,10 @@ class Ui_MainWindow(object):
 
         self.button_browse_folder = QPushButton(self.widget_configuration)
         self.button_browse_folder.setObjectName(u"button_browse_folder")
+        font1 = QFont()
+        font1.setPointSize(12)
+        font1.setBold(True)
+        self.button_browse_folder.setFont(font1)
 
         self.horizontalLayout_3.addWidget(self.button_browse_folder)
 
@@ -188,6 +195,7 @@ class Ui_MainWindow(object):
 
         self.button_parse_files = QPushButton(self.widget_configuration)
         self.button_parse_files.setObjectName(u"button_parse_files")
+        self.button_parse_files.setFont(font1)
 
         self.verticalLayout_3.addWidget(self.button_parse_files)
 
@@ -196,6 +204,7 @@ class Ui_MainWindow(object):
 
         self.progressbar = QProgressBar(self.verticalGroupBox_information)
         self.progressbar.setObjectName(u"progressbar")
+        self.progressbar.setFont(font1)
         self.progressbar.setValue(24)
 
         self.verticalLeftLogView.addWidget(self.progressbar)
@@ -204,9 +213,9 @@ class Ui_MainWindow(object):
         self.verticalGroupBox_directory_view = QGroupBox(self.splitterTop)
         self.verticalGroupBox_directory_view.setObjectName(u"verticalGroupBox_directory_view")
         self.verticalRightTreeView = QVBoxLayout(self.verticalGroupBox_directory_view)
-        self.verticalRightTreeView.setSpacing(3)
+        self.verticalRightTreeView.setSpacing(6)
         self.verticalRightTreeView.setObjectName(u"verticalRightTreeView")
-        self.verticalRightTreeView.setContentsMargins(3, 1, 3, 3)
+        self.verticalRightTreeView.setContentsMargins(4, 5, 4, 3)
         self.treeview_directory_view = QTreeView(self.verticalGroupBox_directory_view)
         self.treeview_directory_view.setObjectName(u"treeview_directory_view")
 
@@ -233,19 +242,25 @@ class Ui_MainWindow(object):
         self.verticalLayout_4.setContentsMargins(-1, 0, -1, 3)
         self.tabWidget_parsed_data_result = QTabWidget(self.widgetBottom)
         self.tabWidget_parsed_data_result.setObjectName(u"tabWidget_parsed_data_result")
+        self.tabWidget_parsed_data_result.setFont(font1)
         self.tabWidget_parsed_data_result.setTabShape(QTabWidget.TabShape.Rounded)
         self.tabWidget_parsed_data_result.setTabBarAutoHide(False)
         self.tabWidget_parsed_data_page = QWidget()
         self.tabWidget_parsed_data_page.setObjectName(u"tabWidget_parsed_data_page")
+        font2 = QFont()
+        font2.setPointSize(12)
+        font2.setBold(False)
+        self.tabWidget_parsed_data_page.setFont(font2)
         self.verticalLayout_2 = QVBoxLayout(self.tabWidget_parsed_data_page)
-        self.verticalLayout_2.setSpacing(3)
+        self.verticalLayout_2.setSpacing(6)
         self.verticalLayout_2.setObjectName(u"verticalLayout_2")
         self.verticalLayout_2.setSizeConstraint(QLayout.SizeConstraint.SetDefaultConstraint)
-        self.verticalLayout_2.setContentsMargins(3, 3, 3, 3)
+        self.verticalLayout_2.setContentsMargins(9, 0, 9, 3)
         self.horizontalLayout_4 = QHBoxLayout()
         self.horizontalLayout_4.setObjectName(u"horizontalLayout_4")
         self.button_import_csv = QPushButton(self.tabWidget_parsed_data_page)
         self.button_import_csv.setObjectName(u"button_import_csv")
+        self.button_import_csv.setFont(font1)
         icon7 = QIcon(QIcon.fromTheme(QIcon.ThemeIcon.InsertLink))
         self.button_import_csv.setIcon(icon7)
 
@@ -268,6 +283,7 @@ class Ui_MainWindow(object):
         sizePolicy4.setVerticalStretch(0)
         sizePolicy4.setHeightForWidth(self.radiobutton_csv.sizePolicy().hasHeightForWidth())
         self.radiobutton_csv.setSizePolicy(sizePolicy4)
+        self.radiobutton_csv.setFont(font1)
         self.radiobutton_csv.setChecked(True)
 
         self.horizontalLayout_4.addWidget(self.radiobutton_csv)
@@ -276,11 +292,13 @@ class Ui_MainWindow(object):
         self.radiobutton_excel.setObjectName(u"radiobutton_excel")
         sizePolicy4.setHeightForWidth(self.radiobutton_excel.sizePolicy().hasHeightForWidth())
         self.radiobutton_excel.setSizePolicy(sizePolicy4)
+        self.radiobutton_excel.setFont(font1)
 
         self.horizontalLayout_4.addWidget(self.radiobutton_excel)
 
         self.button_export = QPushButton(self.tabWidget_parsed_data_page)
         self.button_export.setObjectName(u"button_export")
+        self.button_export.setFont(font1)
 
         self.horizontalLayout_4.addWidget(self.button_export)
 
@@ -294,6 +312,7 @@ class Ui_MainWindow(object):
         self.button_clear_table = QPushButton(self.tabWidget_parsed_data_page)
         self.button_clear_table.setObjectName(u"button_clear_table")
         self.button_clear_table.setEnabled(False)
+        self.button_clear_table.setFont(font1)
 
         self.horizontalLayout_4.addWidget(self.button_clear_table)
 
@@ -323,10 +342,11 @@ class Ui_MainWindow(object):
         self.tabWidget_parsed_data_result.addTab(self.tabWidget_parsed_data_page, "")
         self.tabWidget_log_preview_page = QWidget()
         self.tabWidget_log_preview_page.setObjectName(u"tabWidget_log_preview_page")
+        self.tabWidget_log_preview_page.setFont(font2)
         self.verticalLayout_5 = QVBoxLayout(self.tabWidget_log_preview_page)
-        self.verticalLayout_5.setSpacing(3)
+        self.verticalLayout_5.setSpacing(6)
         self.verticalLayout_5.setObjectName(u"verticalLayout_5")
-        self.verticalLayout_5.setContentsMargins(3, 3, 3, 3)
+        self.verticalLayout_5.setContentsMargins(9, 0, 9, 3)
         self.horizontalLayout = QHBoxLayout()
         self.horizontalLayout.setObjectName(u"horizontalLayout")
         self.label_log_preview_sort_by_date = QLabel(self.tabWidget_log_preview_page)
@@ -336,10 +356,10 @@ class Ui_MainWindow(object):
 
         self.horizontalLayout.addWidget(self.label_log_preview_sort_by_date)
 
-        self.combobox_log_preview = QComboBox(self.tabWidget_log_preview_page)
-        self.combobox_log_preview.setObjectName(u"combobox_log_preview")
+        self.combobox_time = QComboBox(self.tabWidget_log_preview_page)
+        self.combobox_time.setObjectName(u"combobox_time")
 
-        self.horizontalLayout.addWidget(self.combobox_log_preview)
+        self.horizontalLayout.addWidget(self.combobox_time)
 
         self.checkbox_log_preview_wrap_text = QCheckBox(self.tabWidget_log_preview_page)
         self.checkbox_log_preview_wrap_text.setObjectName(u"checkbox_log_preview_wrap_text")
@@ -349,12 +369,12 @@ class Ui_MainWindow(object):
 
         self.verticalLayout_5.addLayout(self.horizontalLayout)
 
-        self.line_3 = QFrame(self.tabWidget_log_preview_page)
-        self.line_3.setObjectName(u"line_3")
-        self.line_3.setFrameShape(QFrame.Shape.HLine)
-        self.line_3.setFrameShadow(QFrame.Shadow.Sunken)
+        self.line_hor = QFrame(self.tabWidget_log_preview_page)
+        self.line_hor.setObjectName(u"line_hor")
+        self.line_hor.setFrameShape(QFrame.Shape.HLine)
+        self.line_hor.setFrameShadow(QFrame.Shadow.Sunken)
 
-        self.verticalLayout_5.addWidget(self.line_3)
+        self.verticalLayout_5.addWidget(self.line_hor)
 
         self.text_edit_log_preview = QPlainTextEdit(self.tabWidget_log_preview_page)
         self.text_edit_log_preview.setObjectName(u"text_edit_log_preview")
@@ -371,11 +391,13 @@ class Ui_MainWindow(object):
         MainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QMenuBar(MainWindow)
         self.menubar.setObjectName(u"menubar")
-        self.menubar.setGeometry(QRect(0, 0, 1103, 33))
+        self.menubar.setGeometry(QRect(0, 0, 1199, 33))
         self.menuSettings = QMenu(self.menubar)
         self.menuSettings.setObjectName(u"menuSettings")
         self.menuAppearance = QMenu(self.menuSettings)
         self.menuAppearance.setObjectName(u"menuAppearance")
+        self.menuAppearance.setEnabled(False)
+        self.menuAppearance.setFont(font2)
         self.menuFile = QMenu(self.menubar)
         self.menuFile.setObjectName(u"menuFile")
         self.menuOpen = QMenu(self.menuFile)
@@ -452,9 +474,9 @@ class Ui_MainWindow(object):
 #endif // QT_CONFIG(tooltip)
         self.input_filter_table.setPlaceholderText(QCoreApplication.translate("MainWindow", u"Filter table data by text...", None))
         self.tabWidget_parsed_data_result.setTabText(self.tabWidget_parsed_data_result.indexOf(self.tabWidget_parsed_data_page), QCoreApplication.translate("MainWindow", u"Result Table", None))
-        self.label_log_preview_sort_by_date.setText(QCoreApplication.translate("MainWindow", u"Filter Text by Time:", None))
+        self.label_log_preview_sort_by_date.setText(QCoreApplication.translate("MainWindow", u"Filter Content by Date/Time:", None))
         self.checkbox_log_preview_wrap_text.setText(QCoreApplication.translate("MainWindow", u"Wrap Text", None))
-        self.tabWidget_parsed_data_result.setTabText(self.tabWidget_parsed_data_result.indexOf(self.tabWidget_log_preview_page), QCoreApplication.translate("MainWindow", u"Log Preview", None))
+        self.tabWidget_parsed_data_result.setTabText(self.tabWidget_parsed_data_result.indexOf(self.tabWidget_log_preview_page), QCoreApplication.translate("MainWindow", u"File Preview", None))
         self.menuSettings.setTitle(QCoreApplication.translate("MainWindow", u"Settings", None))
         self.menuAppearance.setTitle(QCoreApplication.translate("MainWindow", u"Appearance", None))
         self.menuFile.setTitle(QCoreApplication.translate("MainWindow", u"File", None))

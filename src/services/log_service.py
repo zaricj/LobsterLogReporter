@@ -41,7 +41,9 @@ class LogService:
 
         if not files:
             self._emit_progress(progress_callback, 100)
-            return ParseLogsResult([], pd.DataFrame(), {"total_entries": 0}, 0, active_profile)
+            return ParseLogsResult(
+                [], pd.DataFrame(), {"total_entries": 0}, 0, active_profile
+            )
 
         for index, log_file in enumerate(files, start=1):
             entries.extend(parser.parse_file(log_file))
@@ -52,11 +54,15 @@ class LogService:
         summary = summarize_entries(entries)
         return ParseLogsResult(entries, dataframe, summary, len(files), active_profile)
 
-    def discover_log_files(self, folder_path: Path, file_patterns: list[str] | None) -> list[Path]:
+    def discover_log_files(
+        self, folder_path: Path, file_patterns: list[str] | None
+    ) -> list[Path]:
         if not folder_path.exists() or not folder_path.is_dir():
             return []
 
-        patterns = [pattern.strip() for pattern in file_patterns or ["*.log"] if pattern.strip()]
+        patterns = [
+            pattern.strip() for pattern in file_patterns or ["*.log"] if pattern.strip()
+        ]
         if not patterns:
             patterns = ["*.log"]
 
@@ -107,7 +113,9 @@ class LogService:
     def _to_dataframe(self, entries: list[LogEntry]) -> pd.DataFrame:
         rows = [
             {
-                "Timestamp": entry.timestamp.isoformat(sep=" ") if entry.timestamp else "",
+                "Timestamp": entry.timestamp.isoformat(sep=" ")
+                if entry.timestamp
+                else "",
                 "Level": entry.level,
                 "Source": entry.source,
                 "Component": entry.component,

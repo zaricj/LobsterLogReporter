@@ -6,9 +6,14 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1103</width>
-    <height>860</height>
+    <width>1199</width>
+    <height>907</height>
    </rect>
+  </property>
+  <property name="font">
+   <font>
+    <pointsize>12</pointsize>
+   </font>
   </property>
   <property name="windowTitle">
    <string>Lobster Log Reporter</string>
@@ -54,16 +59,16 @@
           </property>
           <layout class="QVBoxLayout" name="verticalLeftLogView">
            <property name="spacing">
-            <number>3</number>
+            <number>6</number>
            </property>
            <property name="leftMargin">
-            <number>3</number>
+            <number>4</number>
            </property>
            <property name="topMargin">
-            <number>3</number>
+            <number>5</number>
            </property>
            <property name="rightMargin">
-            <number>3</number>
+            <number>4</number>
            </property>
            <property name="bottomMargin">
             <number>3</number>
@@ -110,16 +115,16 @@
              </property>
              <layout class="QVBoxLayout" name="verticalLayout_3">
               <property name="spacing">
-               <number>3</number>
+               <number>6</number>
               </property>
               <property name="leftMargin">
-               <number>3</number>
+               <number>9</number>
               </property>
               <property name="topMargin">
-               <number>1</number>
+               <number>0</number>
               </property>
               <property name="rightMargin">
-               <number>3</number>
+               <number>9</number>
               </property>
               <property name="bottomMargin">
                <number>3</number>
@@ -198,6 +203,12 @@
                 </item>
                 <item>
                  <widget class="QPushButton" name="button_browse_folder">
+                  <property name="font">
+                   <font>
+                    <pointsize>12</pointsize>
+                    <bold>true</bold>
+                   </font>
+                  </property>
                   <property name="toolTip">
                    <string>Browse folder directory.</string>
                   </property>
@@ -249,6 +260,12 @@
               </item>
               <item>
                <widget class="QPushButton" name="button_parse_files">
+                <property name="font">
+                 <font>
+                  <pointsize>12</pointsize>
+                  <bold>true</bold>
+                 </font>
+                </property>
                 <property name="toolTip">
                  <string>Parse and search the found files in the folder and display it's results into the table below.</string>
                 </property>
@@ -262,6 +279,12 @@
            </item>
            <item>
             <widget class="QProgressBar" name="progressbar">
+             <property name="font">
+              <font>
+               <pointsize>12</pointsize>
+               <bold>true</bold>
+              </font>
+             </property>
              <property name="value">
               <number>24</number>
              </property>
@@ -275,16 +298,16 @@
           </property>
           <layout class="QVBoxLayout" name="verticalRightTreeView">
            <property name="spacing">
-            <number>3</number>
+            <number>6</number>
            </property>
            <property name="leftMargin">
-            <number>3</number>
+            <number>4</number>
            </property>
            <property name="topMargin">
-            <number>1</number>
+            <number>5</number>
            </property>
            <property name="rightMargin">
-            <number>3</number>
+            <number>4</number>
            </property>
            <property name="bottomMargin">
             <number>3</number>
@@ -317,6 +340,12 @@
        </property>
        <item>
         <widget class="QTabWidget" name="tabWidget_parsed_data_result">
+         <property name="font">
+          <font>
+           <pointsize>12</pointsize>
+           <bold>true</bold>
+          </font>
+         </property>
          <property name="tabShape">
           <enum>QTabWidget::TabShape::Rounded</enum>
          </property>
@@ -327,24 +356,30 @@
           <bool>false</bool>
          </property>
          <widget class="QWidget" name="tabWidget_parsed_data_page">
+          <property name="font">
+           <font>
+            <pointsize>12</pointsize>
+            <bold>false</bold>
+           </font>
+          </property>
           <attribute name="title">
            <string>Result Table</string>
           </attribute>
           <layout class="QVBoxLayout" name="verticalLayout_2">
            <property name="spacing">
-            <number>3</number>
+            <number>6</number>
            </property>
            <property name="sizeConstraint">
             <enum>QLayout::SizeConstraint::SetDefaultConstraint</enum>
            </property>
            <property name="leftMargin">
-            <number>3</number>
+            <number>9</number>
            </property>
            <property name="topMargin">
-            <number>3</number>
+            <number>0</number>
            </property>
            <property name="rightMargin">
-            <number>3</number>
+            <number>9</number>
            </property>
            <property name="bottomMargin">
             <number>3</number>
@@ -353,6 +388,12 @@
             <layout class="QHBoxLayout" name="horizontalLayout_4">
              <item>
               <widget class="QPushButton" name="button_import_csv">
+               <property name="font">
+                <font>
+                 <pointsize>12</pointsize>
+                 <bold>true</bold>
+                </font>
+               </property>
                <property name="toolTip">
                 <string>Import a CSV file into the table.</string>
                </property>
@@ -385,6 +426,12 @@
                  <verstretch>0</verstretch>
                 </sizepolicy>
                </property>
+               <property name="font">
+                <font>
+                 <pointsize>12</pointsize>
+                 <bold>true</bold>
+                </font>
+               </property>
                <property name="text">
                 <string>CSV</string>
                </property>
@@ -401,6 +448,12 @@
                  <verstretch>0</verstretch>
                 </sizepolicy>
                </property>
+               <property name="font">
+                <font>
+                 <pointsize>12</pointsize>
+                 <bold>true</bold>
+                </font>
+               </property>
                <property name="text">
                 <string>Excel</string>
                </property>
@@ -408,6 +461,12 @@
              </item>
              <item>
               <widget class="QPushButton" name="button_export">
+               <property name="font">
+                <font>
+                 <pointsize>12</pointsize>
+                 <bold>true</bold>
+                </font>
+               </property>
                <property name="toolTip">
                 <string>Export the table data.</string>
                </property>
@@ -427,6 +486,12 @@
               <widget class="QPushButton" name="button_clear_table">
                <property name="enabled">
                 <bool>false</bool>
+               </property>
+               <property name="font">
+                <font>
+                 <pointsize>12</pointsize>
+                 <bold>true</bold>
+                </font>
                </property>
                <property name="toolTip">
                 <string>Clear table results.</string>
@@ -471,21 +536,27 @@
           </layout>
          </widget>
          <widget class="QWidget" name="tabWidget_log_preview_page">
+          <property name="font">
+           <font>
+            <pointsize>12</pointsize>
+            <bold>false</bold>
+           </font>
+          </property>
           <attribute name="title">
-           <string>Log Preview</string>
+           <string>File Preview</string>
           </attribute>
           <layout class="QVBoxLayout" name="verticalLayout_5">
            <property name="spacing">
-            <number>3</number>
+            <number>6</number>
            </property>
            <property name="leftMargin">
-            <number>3</number>
+            <number>9</number>
            </property>
            <property name="topMargin">
-            <number>3</number>
+            <number>0</number>
            </property>
            <property name="rightMargin">
-            <number>3</number>
+            <number>9</number>
            </property>
            <property name="bottomMargin">
             <number>3</number>
@@ -501,12 +572,12 @@
                 </sizepolicy>
                </property>
                <property name="text">
-                <string>Filter Text by Time:</string>
+                <string>Filter Content by Date/Time:</string>
                </property>
               </widget>
              </item>
              <item>
-              <widget class="QComboBox" name="combobox_log_preview"/>
+              <widget class="QComboBox" name="combobox_time"/>
              </item>
              <item>
               <widget class="QCheckBox" name="checkbox_log_preview_wrap_text">
@@ -518,7 +589,7 @@
             </layout>
            </item>
            <item>
-            <widget class="Line" name="line_3">
+            <widget class="Line" name="line_hor">
              <property name="orientation">
               <enum>Qt::Orientation::Horizontal</enum>
              </property>
@@ -541,7 +612,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1103</width>
+     <width>1199</width>
      <height>33</height>
     </rect>
    </property>
@@ -550,6 +621,15 @@
      <string>Settings</string>
     </property>
     <widget class="QMenu" name="menuAppearance">
+     <property name="enabled">
+      <bool>false</bool>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>12</pointsize>
+       <bold>false</bold>
+      </font>
+     </property>
      <property name="title">
       <string>Appearance</string>
      </property>

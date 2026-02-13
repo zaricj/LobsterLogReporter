@@ -14,25 +14,26 @@ CONFIG_DIRECTORY: Path = ROOT_DIR / "config"
 LOG_PATTERN_CONFIG: Path = CONFIG_DIRECTORY / "log_patterns.json"
 GUI_SETTINGS_CONFIG: Path = CONFIG_DIRECTORY / "gui_settings.json"
 
+
 class Mixin:
     """
     Mixin class that provides signal handling interface using specialized handlers.
     Delegates responsibilities to focused handler classes for better separation of concerns.
     """
+
     # Type hints for attributes accessed in this mixin
     ui: Ui_MainWindow
     # helper: 'HelperMethods'
     # ui_state_manager: 'UIStateManager'
-    settings: 'QSettings'
+    settings: "QSettings"
     set_max_threads: int
 
     def initialize_ui_all(self):
-        """Initialize all utilities, handlers, ui signals etc...
-        """
-        self.initialize_views()        # Initialize all the different views like Table and Tree
-        self.initialize_utilities()    # Initialize utilities first
-        self.initialize_handlers()     # Then handlers (which depend on utilities)
-        self.initialize_handler_signals()   # Finally connect signals
+        """Initialize all utilities, handlers, ui signals etc..."""
+        self.initialize_views()  # Initialize all the different views like Table and Tree
+        self.initialize_utilities()  # Initialize utilities first
+        self.initialize_handlers()  # Then handlers (which depend on utilities)
+        self.initialize_handler_signals()  # Finally connect signals
 
     def initialize_handlers(self):
         """Initialize all specialized event handlers."""
@@ -45,7 +46,7 @@ class Mixin:
         self.combobox_handler = ComboBoxEventHandler(self)
         self.line_edit_handler = LineEditHandler(self)
         self.menu_bar_handler = MenuBarHandler(self)
-        
+
     def initialize_handler_signals(self):
         self.button_handler.connect_signals()
         self.combobox_handler.connect_signals()
@@ -59,9 +60,9 @@ class Mixin:
 
         self.helper = HelperMethods(self)
         self.ui_state_manager = UIStateManager(self)
-        self.log_pattern_handler = ConfigHandler(self,
-                                              CONFIG_DIRECTORY,
-                                              LOG_PATTERN_CONFIG)
+        self.log_pattern_handler = ConfigHandler(
+            self, CONFIG_DIRECTORY, LOG_PATTERN_CONFIG
+        )
 
     def initialize_views(self):
         # Init the tree view model object
@@ -70,7 +71,7 @@ class Mixin:
 
     @Slot(str, int)
     def handle_statusbar_show_message(self, message: str, duration: int) -> None:
-        """ Handler for QStatusbar showMessage signals.
+        """Handler for QStatusbar showMessage signals.
 
         Args:
             message (str): The message to be shown in the statusbar.

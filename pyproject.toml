@@ -5,10 +5,7 @@ description = "Add your description here"
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
-    "pyside6-essentials>=6.10.1",
-]
-
-[tool.uv.workspace]
-members = [
-    "src",
+    "pandas>=3.0.0",
+    "pyqtdarktheme>=2.1.0",
+    "pyside6-essentials>=6.10.2",
 ]

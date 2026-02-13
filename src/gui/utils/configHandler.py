@@ -1,4 +1,4 @@
-from PySide6.QtWidgets import QMessageBox, QMainWindow
+from PySide6.QtWidgets import QMessageBox
 from pathlib import Path
 from typing import TYPE_CHECKING
 import json
@@ -6,8 +6,14 @@ import json
 if TYPE_CHECKING:
     from app import MainWindow
 
+
 class ConfigHandler:
-    def __init__(self, main_window: 'MainWindow' = None, config_directory: Path = None, config_file_name: Path = None):
+    def __init__(
+        self,
+        main_window: "MainWindow" = None,
+        config_directory: Path = None,
+        config_file_name: Path = None,
+    ):
         """Initializes the ConfigHandler with a specific JSON configuration file."""
         self.main_window = main_window
         self.config_directory: Path = config_directory
@@ -24,10 +30,18 @@ class ConfigHandler:
                 with open(self.config_file_name, "r", encoding="utf-8") as f:
                     return json.load(f)
             except json.JSONDecodeError:
-                QMessageBox.warning(self.main_window, "Load config warning", f"Warning: {self.config_file_name} contains invalid JSON. Resetting configuration file.")
+                QMessageBox.warning(
+                    self.main_window,
+                    "Load config warning",
+                    f"Warning: {self.config_file_name} contains invalid JSON. Resetting configuration file.",
+                )
                 self.reset_config()
         else:
-            QMessageBox.warning(self.main_window, "Configuration file does not exist", "Trying to load a non existing configuration file!")
+            QMessageBox.warning(
+                self.main_window,
+                "Configuration file does not exist",
+                "Trying to load a non existing configuration file!",
+            )
             return {}
 
     def save_config(self):
@@ -40,13 +54,13 @@ class ConfigHandler:
         current_data = self.load_config()
         for i, key in enumerate(keys):
             if key not in current_data:
-                return None, None # Key not found, or not a dict
-            if i < len(keys) - 1: # Not the last key, expect a dictionary
+                return None, None  # Key not found, or not a dict
+            if i < len(keys) - 1:  # Not the last key, expect a dictionary
                 if not isinstance(current_data[key], dict):
                     # Path broken: trying to access sub-key of a non-dict
                     return None, None
                 current_data = current_data[key]
-        return current_data, keys[-1] # Return parent dict and the actual key
+        return current_data, keys[-1]  # Return parent dict and the actual key
 
     def set(self, key_path: str, value: any):
         """
@@ -74,22 +88,24 @@ class ConfigHandler:
             #     }
             # }
         """
-        keys = key_path.split('.')
+        keys = key_path.split(".")
         parent_data = self.data
         for i, key in enumerate(keys):
-            if i == len(keys) - 1: # Last key in the path
+            if i == len(keys) - 1:  # Last key in the path
                 parent_data[key] = value
-            else: # Not the last key, ensure it's a dictionary
+            else:  # Not the last key, ensure it's a dictionary
                 if key not in parent_data or not isinstance(parent_data[key], dict):
-                    parent_data[key] = {} # Create dict if it doesn't exist or is not a dict
+                    parent_data[
+                        key
+                    ] = {}  # Create dict if it doesn't exist or is not a dict
                 parent_data = parent_data[key]
         self.save_config()
 
     def get(self, key_path: str) -> dict | str:
         """Gets a configuration value, handling nested keys (e.g., 'section.subsection.key').
-            
-            If it's a key that contains sub keys, it will return a dictionary, if the key does not have sub keys it will return the key's value as a string"""
-        keys = key_path.split('.')
+
+        If it's a key that contains sub keys, it will return a dictionary, if the key does not have sub keys it will return the key's value as a string"""
+        keys = key_path.split(".")
         current_data: dict | str = self.load_config()
         for key in keys:
             if isinstance(current_data, dict) and key in current_data:
@@ -100,21 +116,26 @@ class ConfigHandler:
 
     def delete(self, key_path: str):
         """Deletes a key from the configuration, handling nested keys (e.g., 'section.subsection.key')."""
-        keys = key_path.split('.')
-        if not keys: return # Nothing to delete
+        keys = key_path.split(".")
+        if not keys:
+            return  # Nothing to delete
 
         parent_data = self.data
         for i, key in enumerate(keys):
-            if i == len(keys) - 1: # Last key in the path
+            if i == len(keys) - 1:  # Last key in the path
                 if isinstance(parent_data, dict) and key in parent_data:
                     del parent_data[key]
                     self.save_config()
-                return # Key not found or parent is not a dict
-            else: # Not the last key, navigate deeper
-                if isinstance(parent_data, dict) and key in parent_data and isinstance(parent_data[key], dict):
+                return  # Key not found or parent is not a dict
+            else:  # Not the last key, navigate deeper
+                if (
+                    isinstance(parent_data, dict)
+                    and key in parent_data
+                    and isinstance(parent_data[key], dict)
+                ):
                     parent_data = parent_data[key]
                 else:
-                    return # Path broken, key or parent not found, or not a dict
+                    return  # Path broken, key or parent not found, or not a dict
 
     def reset_config(self):
         """Resets the configuration file to an empty dictionary and saves it."""
@@ -138,7 +159,7 @@ class ConfigHandler:
             nested_data = self.get(key_path)
             if isinstance(nested_data, dict):
                 return list(nested_data.keys())
-            return [] # If key_path leads to a non-dict value
+            return []  # If key_path leads to a non-dict value
         return list(self.data.keys())
 
     # The specific custom_path methods are now redundant with the new set/get/delete

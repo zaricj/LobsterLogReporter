@@ -27,9 +27,13 @@ class LobsterLogParser:
 
         self.entry_header_pattern = re.compile(entry_pattern_text, re.DOTALL)
 
-        profile_header_pattern = str(pattern_config.get("profile_header_pattern", "")).strip()
+        profile_header_pattern = str(
+            pattern_config.get("profile_header_pattern", "")
+        ).strip()
         self.profile_header_pattern = (
-            re.compile(profile_header_pattern, re.IGNORECASE) if profile_header_pattern else None
+            re.compile(profile_header_pattern, re.IGNORECASE)
+            if profile_header_pattern
+            else None
         )
 
         self.sql_statement_pattern = self._compile_optional_pattern(
@@ -112,7 +116,9 @@ class LobsterLogParser:
         except ValueError:
             return None
 
-    def _build_timestamp(self, log_date: date | None, time_part: str) -> datetime | None:
+    def _build_timestamp(
+        self, log_date: date | None, time_part: str
+    ) -> datetime | None:
         if log_date is None:
             return None
         try:

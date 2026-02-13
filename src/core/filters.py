@@ -6,14 +6,18 @@ from typing import Iterable, Iterator
 from core.models import LogEntry
 
 
-def filter_by_level(entries: Iterable[LogEntry], levels: set[str]) -> Iterator[LogEntry]:
+def filter_by_level(
+    entries: Iterable[LogEntry], levels: set[str]
+) -> Iterator[LogEntry]:
     normalized = {level.upper() for level in levels}
     for entry in entries:
         if entry.level.upper() in normalized:
             yield entry
 
 
-def filter_by_component(entries: Iterable[LogEntry], components: set[str]) -> Iterator[LogEntry]:
+def filter_by_component(
+    entries: Iterable[LogEntry], components: set[str]
+) -> Iterator[LogEntry]:
     normalized = {component.lower() for component in components}
     for entry in entries:
         if entry.component.lower() in normalized:
