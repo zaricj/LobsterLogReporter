@@ -36,9 +36,7 @@ class ButtonEventHandler:
         self.ui.button_clear_table.clicked.connect(self.on_clear_table)
         self.ui.button_parse_files.clicked.connect(self.on_parse_files)
         self.ui.button_export.clicked.connect(self.on_export_data)
-        self.ui.button_pattern_configuration_info.clicked.connect(
-            self.on_pattern_config_info
-        )
+        self.ui.button_pattern_configuration_info.clicked.connect(self.on_pattern_config_info)
 
     @Slot()
     def on_pattern_config_info(self) -> None:

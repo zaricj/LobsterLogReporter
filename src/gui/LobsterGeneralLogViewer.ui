@@ -323,13 +323,6 @@
      </widget>
     </item>
     <item>
-     <widget class="Line" name="line">
-      <property name="orientation">
-       <enum>Qt::Orientation::Horizontal</enum>
-      </property>
-     </widget>
-    </item>
-    <item>
      <widget class="QWidget" name="widgetBottom" native="true">
       <layout class="QVBoxLayout" name="verticalLayout_4">
        <property name="topMargin">
@@ -386,6 +379,12 @@
            </property>
            <item>
             <layout class="QHBoxLayout" name="horizontalLayout_4">
+             <property name="spacing">
+              <number>6</number>
+             </property>
+             <property name="topMargin">
+              <number>3</number>
+             </property>
              <item>
               <widget class="QPushButton" name="button_import_csv">
                <property name="font">
@@ -584,6 +583,9 @@
                <property name="text">
                 <string>Wrap Text</string>
                </property>
+               <property name="checked">
+                <bool>true</bool>
+               </property>
               </widget>
              </item>
             </layout>
@@ -622,7 +624,7 @@
     </property>
     <widget class="QMenu" name="menuAppearance">
      <property name="enabled">
-      <bool>false</bool>
+      <bool>true</bool>
      </property>
      <property name="font">
       <font>

@@ -41,16 +41,19 @@ class Mixin:
         from gui.events.comboboxEvents import ComboBoxEventHandler
         from gui.events.lineEditEvents import LineEditHandler
         from gui.events.menuBarEvents import MenuBarHandler
+        from gui.events.checkboxEvents import CheckboxHandler
 
         self.button_handler = ButtonEventHandler(self)
         self.combobox_handler = ComboBoxEventHandler(self)
         self.line_edit_handler = LineEditHandler(self)
+        self.checkbox_handler = CheckboxHandler(self)
         self.menu_bar_handler = MenuBarHandler(self)
 
     def initialize_handler_signals(self):
         self.button_handler.connect_signals()
         self.combobox_handler.connect_signals()
         self.line_edit_handler.connect_signals()
+        self.checkbox_handler.connect_signals()
         self.menu_bar_handler.connect_signals()
 
     def initialize_utilities(self):

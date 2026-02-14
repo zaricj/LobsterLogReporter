@@ -18,8 +18,8 @@ ROOT_DIR = Path(__file__).parent
 APP_ICON: Path = ROOT_DIR / "gui" / "assets" / "images" / "app-icon.png"
 
 # Application versioning and metadata
-APP_VERSION: str = "v0.0.1"
-APP_NAME: str = "LobsterLogReportViewer"
+APP_VERSION: str = "v1.0.0"
+APP_NAME: str = "LobsterLogAnalyzer"
 AUTHOR: str = "Jovan"
 
 
@@ -77,26 +77,11 @@ def restore_splitter_state(
 
 def initialize_theme(
     parent: Self,
-    theme_file_path: str | Path,
+    theme: str,
     settings: QSettings,
-    key: str = "appAppearanceMode",
-):
-    try:
-        file = QFile(theme_file_path)
-        if file.open(QFile.ReadOnly | QFile.Text):
-            stream = QTextStream(file)
-            stylesheet = stream.readAll()
-            parent.setStyleSheet(stylesheet)
-        file.close()
-        save_app_theme(theme_file_path, settings)
-    except Exception as ex:
-        QMessageBox.critical(
-            parent, "Theme load error", f"Failed to load theme: {str(ex)}"
-        )
-
-
-def save_app_theme(theme_file_path: Path | str, settings: QSettings):
-    settings.setValue("appAppearanceMode", theme_file_path)
+    key: str = "appAppearanceMode"):
+    qdarktheme.setup_theme(theme, "rounded", custom_colors={"primary": "#019743"}) # Apply theme
+    settings.setValue("appAppearanceMode",theme)
 
 
 # ----------------------------
@@ -113,25 +98,15 @@ class MainWindow(QMainWindow, Mixin):
         self.config_dir: Path = self.root_dir / "config"
         self.log_pattern_config: Path = self.config_dir / "log_patterns.json"
         self.gui_settings_config: Path = self.config_dir / "gui_settings.json"
-
-        self.dark_appearance_file_path: Path = (
-            self.root_dir / "gui" / "assets" / "styles" / "dark.qss"
-        )
-        self.light_appearance_file_path: Path = (
-            self.root_dir / "gui" / "assets" / "styles" / "light.qss"
-        )
-
         # Application settings
-        self.settings = QSettings("Jovan", "LobsterLogReporterApp")
+        self.settings = QSettings("Jovan", "LobsterLogAnalyzer")
 
         self.app_icon: str = APP_ICON.__str__()
         self.thread_pool: QThreadPool = QThreadPool()  # Thread pool
 
         self.initialize_ui_all()  # From Mixin class
         self.ui_state_manager.initial_ui_state_on_start()
-
-        # Load initial application's settings
-        self.load_app_settings()
+        self.load_app_settings() # Load initial application's settings
 
     def load_app_settings(self) -> None:
         """Load application settings from QSettings."""
@@ -139,8 +114,8 @@ class MainWindow(QMainWindow, Mixin):
         restore_window_state(self, self.settings)
         restore_splitter_state(self.ui.splitterTop, self.settings)
         # Initialize theme/style for application
-        # appearance_mode = self.settings.value("appAppearanceMode", str(self.dark_appearance_file_path))
-        # initialize_theme(self, appearance_mode, self.settings)
+        theme = self.settings.value("appAppearanceMode", str("dark"))
+        initialize_theme(self, theme, self.settings)
         self.ui.statusbar.showMessage("Application settings loaded.", 5000)  # Shows message in statusbar
 
     # Helper method to save apps settings in a more DRY way
@@ -159,7 +134,6 @@ class MainWindow(QMainWindow, Mixin):
 if __name__ == "__main__":
     qdarktheme.enable_hi_dpi()
     app = QApplication(sys.argv)
-    qdarktheme.setup_theme("auto", "sharp", custom_colors={"primary": "#019743"}) # Apply theme
     window = MainWindow()
     window.show()
     sys.exit(app.exec())

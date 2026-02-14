@@ -44,13 +44,13 @@ class MenuBarHandler:
         if dark_checked:
             initialize_theme(
                 self.main_window,
-                self.main_window.dark_appearance_file_path,
-                self.settings,
+                "dark",
+                self.settings
             )
         if light_checked:
             initialize_theme(
                 self.main_window,
-                self.main_window.light_appearance_file_path,
+                "light",
                 self.settings,
             )
 

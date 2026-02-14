@@ -228,13 +228,6 @@ class Ui_MainWindow(object):
 
         self.verticalLayout.addWidget(self.widgetTop)
 
-        self.line = QFrame(self.centralwidget)
-        self.line.setObjectName(u"line")
-        self.line.setFrameShape(QFrame.Shape.HLine)
-        self.line.setFrameShadow(QFrame.Shadow.Sunken)
-
-        self.verticalLayout.addWidget(self.line)
-
         self.widgetBottom = QWidget(self.centralwidget)
         self.widgetBottom.setObjectName(u"widgetBottom")
         self.verticalLayout_4 = QVBoxLayout(self.widgetBottom)
@@ -257,7 +250,9 @@ class Ui_MainWindow(object):
         self.verticalLayout_2.setSizeConstraint(QLayout.SizeConstraint.SetDefaultConstraint)
         self.verticalLayout_2.setContentsMargins(9, 0, 9, 3)
         self.horizontalLayout_4 = QHBoxLayout()
+        self.horizontalLayout_4.setSpacing(6)
         self.horizontalLayout_4.setObjectName(u"horizontalLayout_4")
+        self.horizontalLayout_4.setContentsMargins(-1, 3, -1, -1)
         self.button_import_csv = QPushButton(self.tabWidget_parsed_data_page)
         self.button_import_csv.setObjectName(u"button_import_csv")
         self.button_import_csv.setFont(font1)
@@ -363,6 +358,7 @@ class Ui_MainWindow(object):
 
         self.checkbox_log_preview_wrap_text = QCheckBox(self.tabWidget_log_preview_page)
         self.checkbox_log_preview_wrap_text.setObjectName(u"checkbox_log_preview_wrap_text")
+        self.checkbox_log_preview_wrap_text.setChecked(True)
 
         self.horizontalLayout.addWidget(self.checkbox_log_preview_wrap_text)
 
@@ -396,7 +392,7 @@ class Ui_MainWindow(object):
         self.menuSettings.setObjectName(u"menuSettings")
         self.menuAppearance = QMenu(self.menuSettings)
         self.menuAppearance.setObjectName(u"menuAppearance")
-        self.menuAppearance.setEnabled(False)
+        self.menuAppearance.setEnabled(True)
         self.menuAppearance.setFont(font2)
         self.menuFile = QMenu(self.menubar)
         self.menuFile.setObjectName(u"menuFile")
