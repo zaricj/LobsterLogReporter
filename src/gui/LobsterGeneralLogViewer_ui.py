@@ -314,13 +314,6 @@ class Ui_MainWindow(object):
 
         self.verticalLayout_2.addLayout(self.horizontalLayout_4)
 
-        self.line_2 = QFrame(self.tabWidget_parsed_data_page)
-        self.line_2.setObjectName(u"line_2")
-        self.line_2.setFrameShape(QFrame.Shape.HLine)
-        self.line_2.setFrameShadow(QFrame.Shadow.Sunken)
-
-        self.verticalLayout_2.addWidget(self.line_2)
-
         self.table_view_result = QTableView(self.tabWidget_parsed_data_page)
         self.table_view_result.setObjectName(u"table_view_result")
         self.table_view_result.setShowGrid(True)
@@ -343,7 +336,9 @@ class Ui_MainWindow(object):
         self.verticalLayout_5.setObjectName(u"verticalLayout_5")
         self.verticalLayout_5.setContentsMargins(9, 0, 9, 3)
         self.horizontalLayout = QHBoxLayout()
+        self.horizontalLayout.setSpacing(6)
         self.horizontalLayout.setObjectName(u"horizontalLayout")
+        self.horizontalLayout.setContentsMargins(-1, 3, -1, -1)
         self.label_log_preview_sort_by_date = QLabel(self.tabWidget_log_preview_page)
         self.label_log_preview_sort_by_date.setObjectName(u"label_log_preview_sort_by_date")
         sizePolicy3.setHeightForWidth(self.label_log_preview_sort_by_date.sizePolicy().hasHeightForWidth())
@@ -364,13 +359,6 @@ class Ui_MainWindow(object):
 
 
         self.verticalLayout_5.addLayout(self.horizontalLayout)
-
-        self.line_hor = QFrame(self.tabWidget_log_preview_page)
-        self.line_hor.setObjectName(u"line_hor")
-        self.line_hor.setFrameShape(QFrame.Shape.HLine)
-        self.line_hor.setFrameShadow(QFrame.Shadow.Sunken)
-
-        self.verticalLayout_5.addWidget(self.line_hor)
 
         self.text_edit_log_preview = QPlainTextEdit(self.tabWidget_log_preview_page)
         self.text_edit_log_preview.setObjectName(u"text_edit_log_preview")
