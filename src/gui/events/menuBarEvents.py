@@ -21,7 +21,7 @@ class MenuBarHandler:
         self.ui.actionDark.triggered.connect(
             lambda: self.toggle_app_appearance(self.ui.actionDark.text().lower())
         )
-        self.ui.actionOutput_Directory.triggered.connect(
+        self.ui.actionInput_Directory.triggered.connect(
             lambda: self.helper.open_dir_in_file_manager(
                 self.ui.input_browse_folder.text()
             )
