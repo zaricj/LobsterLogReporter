@@ -1,18 +1,20 @@
 {
   "default_profile": "lobster_error_default",
+  "base_patterns": {
+    "profile_header_pattern": "Error-log for '(?P<profile>[^']+)'",
+    "entry_header_pattern": "(?P<time>\\d{2}:\\d{2}:\\d{2})\\s+(?P<source>[A-Z]+:[A-Z:]+(?:\\([^)]+\\))?)\\s+(?P<error_block>.+?)(?=\\n\\d{2}:\\d{2}:\\d{2}\\s+[A-Z]+:[A-Z:]|\\Z)",
+    "sql_statement_pattern": "exception on sql statement:\\s*(?P<sql>.+?)(?=(?:\\n[A-Z][a-z]+\\.|\\nParam|\\Z))",
+    "param_pattern": "Param for failed sql statement\\s+\\[(?P<param>[^\\]]+)]\\s+'(?P<value>[^']+)'",
+    "caused_by_pattern": "^\\s*Caused by:\\s*(?P<cause>[^\\n]*)",
+    "ignore_stacktrace_pattern": "^\\s*at\\s+[\\w.$]+\\(.*\\)$"
+  },
   "profiles": {
     "lobster_error_default": {
-      "profile_header_pattern": "Error-log for '(?P<profile>[^']+)'",
-      "entry_header_pattern": "(?P<time>\\d{2}:\\d{2}:\\d{2})\\s+(?P<source>[A-Z]+:[A-Z:]+(?:\\([^)]+\\))?)\\s+(?P<error_block>.+?)(?=\\n\\d{2}:\\d{2}:\\d{2}\\s+[A-Z]+:[A-Z:]|\\Z)",
-      "sql_statement_pattern": "exception on sql statement:\\s*(?P<sql>.+?)(?=(?:\\n[A-Z][a-z]+\\.|\\nParam|\\Z))",
-      "param_pattern": "Param for failed sql statement\\s+\\[(?P<param>[^\\]]+)]\\s+'(?P<value>[^']+)'",
-      "caused_by_pattern": "^\\s*Caused by:\\s*(?P<cause>[^\\n]*)",
-      "ignore_stacktrace_pattern": "^\\s*at\\s+[\\w.$]+\\(.*\\)$",
       "exception_patterns": {
         "sql_datatype_mismatch": "java\\.sql\\.SQLException: Data type mismatch",
-        "sql_duplicate_key": "\\[SQL0803] Doppelter Schlüsselwert angegeben",
+        "sql_duplicate_key": "\\[SQL0803] Doppelter Schl(?:u|\\u00fc)sselwert angegeben",
         "sql_data_conversion": "\\[SQL0802] Fehler bei Datenumsetzung",
-        "sql_multiple_rows": "\\[SQL0811] Ergebnis der Anweisung enthält mehr als eine Zeile",
+        "sql_multiple_rows": "\\[SQL0811] Ergebnis der Anweisung enth(?:a|\\u00e4)lt mehr als eine Zeile",
         "sql_syntax_error": "AS400JDBCSQLSyntaxErrorException: \\[SQL0104] Token",
         "sql_nontransient_connection": "java\\.sql\\.SQLNonTransientConnectionException",
         "sql_generic": "java\\.sql\\.SQLException",
@@ -29,12 +31,6 @@
       }
     },
     "lobster_connection_focus": {
-      "profile_header_pattern": "Error-log for '(?P<profile>[^']+)'",
-      "entry_header_pattern": "(?P<time>\\d{2}:\\d{2}:\\d{2})\\s+(?P<source>[A-Z]+:[A-Z:]+(?:\\([^)]+\\))?)\\s+(?P<error_block>.+?)(?=\\n\\d{2}:\\d{2}:\\d{2}\\s+[A-Z]+:[A-Z:]|\\Z)",
-      "sql_statement_pattern": "exception on sql statement:\\s*(?P<sql>.+?)(?=(?:\\n[A-Z][a-z]+\\.|\\nParam|\\Z))",
-      "param_pattern": "Param for failed sql statement\\s+\\[(?P<param>[^\\]]+)]\\s+'(?P<value>[^']+)'",
-      "caused_by_pattern": "^\\s*Caused by:\\s*(?P<cause>[^\\n]*)",
-      "ignore_stacktrace_pattern": "^\\s*at\\s+[\\w.$]+\\(.*\\)$",
       "exception_patterns": {
         "sql_nontransient_connection": "java\\.sql\\.SQLNonTransientConnectionException",
         "mariadb_socket": "Socket error",

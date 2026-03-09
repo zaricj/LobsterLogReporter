@@ -88,6 +88,7 @@ class LogService:
     ) -> tuple[str, dict[str, object]]:
         all_patterns = self._load_patterns()
         profiles_obj = all_patterns.get("profiles")
+        base_patterns_obj = all_patterns.get("base_patterns")
 
         # Backward-compatible mode for old flat JSON.
         if not isinstance(profiles_obj, dict):
@@ -108,7 +109,31 @@ class LogService:
                 f"Unknown pattern profile '{selected_profile}'. Available: {', '.join(available_profiles)}"
             )
 
-        return selected_profile, selected_patterns
+        resolved_patterns = self._merge_pattern_config(
+            base_patterns_obj, selected_patterns
+        )
+        return selected_profile, resolved_patterns
+
+    def _merge_pattern_config(
+        self, base_patterns_obj: object, selected_patterns: dict[str, object]
+    ) -> dict[str, object]:
+        """Merge optional base patterns with profile-specific overrides."""
+        if not isinstance(base_patterns_obj, dict):
+            return dict(selected_patterns)
+
+        merged: dict[str, object] = dict(base_patterns_obj)
+        for key, value in selected_patterns.items():
+            if (
+                key in merged
+                and isinstance(merged[key], dict)
+                and isinstance(value, dict)
+            ):
+                nested = dict(merged[key])
+                nested.update(value)
+                merged[key] = nested
+            else:
+                merged[key] = value
+        return merged
 
     def _to_dataframe(self, entries: list[LogEntry]) -> pd.DataFrame:
         rows = [
