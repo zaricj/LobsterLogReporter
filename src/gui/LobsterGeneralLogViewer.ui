@@ -584,6 +584,58 @@
                </property>
               </widget>
              </item>
+             <item>
+              <widget class="Line" name="line">
+               <property name="orientation">
+                <enum>Qt::Orientation::Vertical</enum>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QCheckBox" name="checkbox_truncate_preview">
+               <property name="text">
+                <string>Truncate Preview</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QLabel" name="label_max_filesize">
+               <property name="enabled">
+                <bool>false</bool>
+               </property>
+               <property name="text">
+                <string>Max file size to preview:</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QSpinBox" name="spinbox_max_filesize_preview">
+               <property name="enabled">
+                <bool>false</bool>
+               </property>
+               <property name="specialValueText">
+                <string/>
+               </property>
+               <property name="suffix">
+                <string> KB</string>
+               </property>
+               <property name="prefix">
+                <string>Read first </string>
+               </property>
+               <property name="minimum">
+                <number>256</number>
+               </property>
+               <property name="maximum">
+                <number>51200</number>
+               </property>
+               <property name="singleStep">
+                <number>256</number>
+               </property>
+               <property name="displayIntegerBase">
+                <number>10</number>
+               </property>
+              </widget>
+             </item>
             </layout>
            </item>
            <item>

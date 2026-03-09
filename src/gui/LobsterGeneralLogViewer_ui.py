@@ -20,9 +20,9 @@ from PySide6.QtWidgets import (QApplication, QCheckBox, QComboBox, QFrame,
     QGroupBox, QHBoxLayout, QHeaderView, QLabel,
     QLayout, QLineEdit, QMainWindow, QMenu,
     QMenuBar, QPlainTextEdit, QProgressBar, QPushButton,
-    QRadioButton, QSizePolicy, QSplitter, QStatusBar,
-    QTabWidget, QTableView, QTextEdit, QTreeView,
-    QVBoxLayout, QWidget)
+    QRadioButton, QSizePolicy, QSpinBox, QSplitter,
+    QStatusBar, QTabWidget, QTableView, QTextEdit,
+    QTreeView, QVBoxLayout, QWidget)
 from gui.assets.qrc import LobsterLogReporter_rc
 
 class Ui_MainWindow(object):
@@ -355,6 +355,34 @@ class Ui_MainWindow(object):
 
         self.horizontalLayout.addWidget(self.checkbox_log_preview_wrap_text)
 
+        self.line = QFrame(self.tabWidget_log_preview_page)
+        self.line.setObjectName(u"line")
+        self.line.setFrameShape(QFrame.Shape.VLine)
+        self.line.setFrameShadow(QFrame.Shadow.Sunken)
+
+        self.horizontalLayout.addWidget(self.line)
+
+        self.checkbox_truncate_preview = QCheckBox(self.tabWidget_log_preview_page)
+        self.checkbox_truncate_preview.setObjectName(u"checkbox_truncate_preview")
+
+        self.horizontalLayout.addWidget(self.checkbox_truncate_preview)
+
+        self.label_max_filesize = QLabel(self.tabWidget_log_preview_page)
+        self.label_max_filesize.setObjectName(u"label_max_filesize")
+        self.label_max_filesize.setEnabled(False)
+
+        self.horizontalLayout.addWidget(self.label_max_filesize)
+
+        self.spinbox_max_filesize_preview = QSpinBox(self.tabWidget_log_preview_page)
+        self.spinbox_max_filesize_preview.setObjectName(u"spinbox_max_filesize_preview")
+        self.spinbox_max_filesize_preview.setEnabled(False)
+        self.spinbox_max_filesize_preview.setMinimum(256)
+        self.spinbox_max_filesize_preview.setMaximum(51200)
+        self.spinbox_max_filesize_preview.setSingleStep(256)
+        self.spinbox_max_filesize_preview.setDisplayIntegerBase(10)
+
+        self.horizontalLayout.addWidget(self.spinbox_max_filesize_preview)
+
 
         self.verticalLayout_5.addLayout(self.horizontalLayout)
 
@@ -458,6 +486,11 @@ class Ui_MainWindow(object):
         self.tabWidget_parsed_data_result.setTabText(self.tabWidget_parsed_data_result.indexOf(self.tabWidget_parsed_data_page), QCoreApplication.translate("MainWindow", u"Result Table", None))
         self.label_log_preview_sort_by_date.setText(QCoreApplication.translate("MainWindow", u"Filter Content by Date/Time:", None))
         self.checkbox_log_preview_wrap_text.setText(QCoreApplication.translate("MainWindow", u"Wrap Text", None))
+        self.checkbox_truncate_preview.setText(QCoreApplication.translate("MainWindow", u"Truncate Preview", None))
+        self.label_max_filesize.setText(QCoreApplication.translate("MainWindow", u"Max file size to preview:", None))
+        self.spinbox_max_filesize_preview.setSpecialValueText("")
+        self.spinbox_max_filesize_preview.setSuffix(QCoreApplication.translate("MainWindow", u" KB", None))
+        self.spinbox_max_filesize_preview.setPrefix(QCoreApplication.translate("MainWindow", u"Read first ", None))
         self.tabWidget_parsed_data_result.setTabText(self.tabWidget_parsed_data_result.indexOf(self.tabWidget_log_preview_page), QCoreApplication.translate("MainWindow", u"File Preview", None))
         self.menuSettings.setTitle(QCoreApplication.translate("MainWindow", u"Settings", None))
         self.menuAppearance.setTitle(QCoreApplication.translate("MainWindow", u"Appearance", None))

@@ -14,7 +14,6 @@ if TYPE_CHECKING:
 
 
 class DirectoryViewer:
-    PREVIEW_MAX_BYTES = 256 * 1024
 
     def __init__(self, main_window: "MainWindow", start_path=None):
         self.main_window = main_window
@@ -112,15 +111,31 @@ class DirectoryViewer:
             f"Loading file preview...\n{file_path}"
         )
         self.ui.combobox_time.clear()
+        max_bytes = self.set_max_filesize_preview(file_path)
 
         worker = Worker(
-            self.read_file_preview_content, file_path, self.PREVIEW_MAX_BYTES
+            self.read_file_preview_content, file_path, max_bytes
         )
         worker.signals.result.connect(self.on_file_preview_result)
         worker.signals.error.connect(self.on_file_preview_error)
         worker.signals.finished.connect(self.on_file_preview_finished)
         self._active_preview_worker = worker
         self.main_window.thread_pool.start(worker)
+        
+    def set_max_filesize_preview(self, file_path: str) -> int:
+        """Set the max file size to preview
+
+        Returns:
+            int: The number of bytes to preview.
+        """
+        # Truncate only when checkbox is checked.
+        if self.ui.checkbox_truncate_preview.isChecked():
+            # Get the spinbox value
+            max_bytes = self.ui.spinbox_max_filesize_preview.value() * 1024
+        else:
+            max_bytes = Path(file_path).stat().st_size
+
+        return max_bytes
 
     def set_folder_path(self, line_edit: QLineEdit, text_to_display: str = None):
         """
@@ -132,21 +147,19 @@ class DirectoryViewer:
         file = Path(file_path)
         with file.open("rb") as handle:
             payload = handle.read(max_bytes + 1)
-
-        is_truncated = len(payload) > max_bytes
-        if is_truncated:
             payload = payload[:max_bytes]
 
         text = payload.decode("utf-8", errors="replace")
+        date_time_values = self.extract_dates_from_content(text)
 
         return {
             "path": str(file),
             "content": text,
-            "truncated": is_truncated,
+            "date_time_values": date_time_values,
         }
 
     def populate_date_time_combobox(
-        self, file_content: str, combobox: QComboBox
+        self, file_content: str, combobox: QComboBox, date_time_values: list[str] | None = None
     ) -> None:
         if len(file_content) == 0:
             self.ui.statusbar.showMessage(
@@ -155,7 +168,8 @@ class DirectoryViewer:
             combobox.clear()
             return
 
-        date_time_values: list[str] = self.extract_dates_from_content(file_content)
+        if date_time_values is None:
+            date_time_values = self.extract_dates_from_content(file_content)
         combobox.blockSignals(True)
         combobox.clear()
         combobox.addItem("All")
@@ -227,10 +241,6 @@ class DirectoryViewer:
             return dates_sorted
 
         except Exception as ex:
-            self.ui.statusbar.showMessage(
-                f"An exception of type {type(ex).__name__} occurred while trying to get the log file dates. {str(ex)}",
-                10000,
-            )
             return []
 
     @Slot(object)
@@ -244,17 +254,20 @@ class DirectoryViewer:
         path = str(result.get("path", ""))
         if not path:
             return
+        if self._pending_preview_path and Path(path) != Path(self._pending_preview_path):
+            return
 
         preview_content = str(result.get("content", ""))
-        is_truncated = bool(result.get("truncated", False))
+        date_time_values = result.get("date_time_values", [])
+        if not isinstance(date_time_values, list):
+            date_time_values = []
         self._current_preview_content = preview_content
-
-        if is_truncated:
-            preview_content += "\n\n[Preview truncated to first 256KB]"
 
         self.ui.text_edit_log_preview.setPlainText(preview_content)
         self.populate_date_time_combobox(
-            self._current_preview_content, self.ui.combobox_time
+            self._current_preview_content,
+            self.ui.combobox_time,
+            date_time_values,
         )
         self.ui.statusbar.showMessage(f"Loaded preview: {path}", 5000)
 
