@@ -18,12 +18,11 @@ def validate_inputs(file: Path) -> bool:
         return False
 
 # ---------- CSV Output ----------
-def write_combined_csv(all_records, headers: List[str], output_csv_file: Path):
+def write_to_csv(data: dict, headers: List[str], output_csv_file: Path):
     with open(output_csv_file,"w", newline="", encoding="utf-8") as csvfile:
-        writer = csv.writer(csvfile, delimiter=";", quotechar='"', quoting=csv.QUOTE_ALL)
-        writer.writerow(headers)
-        for row in all_records:
-            writer.writerow(row)
+        writer = csv.DictWriter(csvfile, fieldnames=headers, delimiter=";", quotechar='"', quoting=csv.QUOTE_ALL)
+        writer.writeheader()
+        writer.writerows(data)
 
     print(f"CSV written: {output_csv_file}")
 
