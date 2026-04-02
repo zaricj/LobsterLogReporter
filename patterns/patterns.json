@@ -1,7 +1,7 @@
 {
   "sql_exceptions": {
     "base": {
-      "header": "^(?P<time>\\d{2}:\\d{2}:\\d{2})\\s+(?P<source>[A-Z:()0-9]+)"
+      "header": "^(?P<time>\\d{2}:\\d{2}:\\d{2})"
     },
     "patterns": {
       "sql_query": "exception on sql statement:\\s*(?P<sql_query>.+?)(?=\\s*\\(transformed to)",
