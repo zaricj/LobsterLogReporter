@@ -36,14 +36,13 @@ def yield_event_block(filepath: str | Path, header_pattern: str | re.Pattern):
             
         if buffer:
             yield "".join(buffer)
-            
 
 
 def extract_event_fields(event_block: str, compiled_patterns: dict) -> Dict[str, str]:
     """Extract fields using compiled regexes
 
     Args:
-        event_block (str): The text block of the event, which contains all the info we  want to extract from
+        event_block (str): The text block of the event, which contains all the info we want to extract from
         compiled_patterns (dict): A dictionary of compiled regex patterns
 
     Returns:
@@ -69,16 +68,27 @@ def extract_event_fields(event_block: str, compiled_patterns: dict) -> Dict[str,
 
 
 def extract_log_date(filepath: Path) -> str:
-    DATE_REGEX = re.compile(
-    r"opened at (?P<date>.+?\d{4})"
-)
+    date = ""
+    
+    # Try first from the file name, if the filename contains a date
+    date_regex = re.compile(r"\d{4}_\d{2}_\d{2}")
+    match = date_regex.search(filepath.with_suffix("").name)
+    
+    if match:
+        print("Found date pattern by using file name.")
+        date = match.group()
+        return date
+    
+    # Else if none was found continue from the withing the log file
+    date_regex = re.compile(r"opened at (?P<date>.+?\d{4})")
+    
     with open(filepath, "r", encoding="utf-8") as f:
         for _ in range(10):  # only scan first lines (fast)
             line = f.readline()
             if not line:
                 break
             
-            match = DATE_REGEX.search(line)
+            match = date_regex.search(line)
             
             if match:
                 raw_date = match.group("date")
@@ -87,11 +97,11 @@ def extract_log_date(filepath: Path) -> str:
 
                 # Convert to datetime
                 dt = datetime.strptime(cleaned_date, "%a %b %d %H:%M:%S %Y")
-
+                date = dt.strftime("%Y-%m-%d")
                 # Return ISO date
-                return dt.strftime("%Y-%m-%d")
+                return date
 
-    return ""
+    return date
 
 
 def get_csv_headers_from_sample(filename: str | Path, header_regex: re.Pattern, compiled_regex: dict, event_keyword: str = "") -> list[str]:

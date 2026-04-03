@@ -1,5 +1,5 @@
 from pathlib import Path
-from utility.pipeline import run_pipeline
+from utility.pipeline import run_pipeline, run_test
 
 if __name__ == "__main__":
     
@@ -9,7 +9,10 @@ if __name__ == "__main__":
     LOGS_PATH = Path("logs")
     CSV_FILE = Path("CSV_Results.csv")
     
-    run_pipeline(
+    # Test run config
+    SAMPLE_FILE = Path("sample.log")
+    
+    normal_run = run_pipeline(
         patterns_config=PATTERNS_CONFIG,
         pattern_key=PATTERN_KEY,
         logs_path=LOGS_PATH,
@@ -18,3 +21,12 @@ if __name__ == "__main__":
         event_keyword="",
         headers_mode="auto"
     )
+    
+    # test_run = run_test(
+    #     patterns_config=PATTERNS_CONFIG,
+    #     pattern_key=PATTERN_KEY,
+    #     sample_file=SAMPLE_FILE,
+    #     output_csv=CSV_FILE,
+    #     event_keyword="",
+    #     headers_mode="auto"
+    # )
