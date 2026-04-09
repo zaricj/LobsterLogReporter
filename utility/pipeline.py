@@ -3,7 +3,7 @@ from pathlib import Path
 
 from utility.config import load_config
 from utility.file_utils import get_files_in_folder
-from utility.exporters import write_csv
+from utility.exporters import write_csv, convert_csv_to_excel
 from utility.parser import (
     yield_event_block,
     extract_matches_from_event_block,
@@ -84,7 +84,7 @@ def run_pipeline(
     files = get_files_in_folder(files_directory, file_pattern)
 
     if not files:
-        raise ValueError("No log files found")
+        raise ValueError(f"No files found in {files_directory}, using pattern {file_pattern}")
 
     # Collect rows + headers in one pass
     rows, headers = collect_rows_and_headers(
@@ -99,6 +99,8 @@ def run_pipeline(
     if rows:
         count = write_csv(output_csv, headers, rows)
         print(f"\nDone. {count} rows written to {output_csv}")
+        # Convert to excel
+        output_excel =  output_csv.with_suffix(".xlsx")
+        convert_csv_to_excel(output_csv, output_excel)
     else:
-        print("No matches found, nothing to write. Bye!")
-
+        print("No matches found, nothing to write.")
