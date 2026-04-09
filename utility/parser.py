@@ -5,7 +5,7 @@ from datetime import datetime
 from tqdm import tqdm
 from typing import Iterator
 
-from utility.core import count_lines
+from utility.file_utils import count_lines
 
 
 # ========== Utility ==========
@@ -102,6 +102,8 @@ def extract_log_date(filepath: Path) -> str:
     
     if match:
         date = match.group()
+        if "_" in date: # Replace underlines with dots in date string
+            date = date.replace("_", ".")  
         return date
     
     # Else if none was found continue from within the file, usually if it's a log file it has a date in the beginning

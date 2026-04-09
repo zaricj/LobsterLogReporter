@@ -1,0 +1,65 @@
+import csv
+import xlsxwriter
+from pathlib import Path
+from typing import Iterator
+
+from utility.file_utils import validate_input, create_directory
+
+# ========== CSV ==========
+
+def write_csv(output: Path, headers: list[str], rows: Iterator[dict]) -> int:
+    """Writes rows to a CSV file with the specified headers.
+
+    Args:
+        output (Path): The path to the output CSV file.
+        headers (list[str]): A list of column headers for the CSV.
+        rows (Iterator[dict]): An iterator over dictionaries representing each row.
+
+    Returns:
+        int: The number of rows written to the CSV file.
+    """
+    count = 0
+
+    exists = validate_input(output)
+    if not exists:
+        create_directory(output)
+
+    with open(output, "w", newline="", encoding="utf-8") as f:
+        writer = csv.DictWriter(
+            f,
+            fieldnames=headers,
+            delimiter=";",
+            quotechar='"',
+            quoting=csv.QUOTE_ALL
+        )
+
+        writer.writeheader()
+
+        for row in rows:
+            normalized = {k: row.get(k, "") for k in headers}
+            writer.writerow(normalized)
+            count += 1
+
+    return count
+
+# ========== Excel Conversion ==========
+
+def convert_csv_to_excel(input_csv_file: Path, output_excel_file: Path):
+    # Validate csv input file
+    is_csv_valid = validate_input(input_csv_file)
+    
+    if is_csv_valid:
+        # Create a new Excel workbook and add a worksheet
+        workbook = xlsxwriter.Workbook(str(output_excel_file))
+        worksheet = workbook.add_worksheet()
+        # Open the CSV file and read its contents using the csv module
+        # Use newline="" so the csv module can handle newlines correctly
+        with open(input_csv_file, "r", newline="", encoding="utf-8") as csvfile:
+            reader = csv.reader(csvfile, delimiter=";", quotechar='"')
+            for row_idx, row in enumerate(reader):
+                for col_idx, cell in enumerate(row):
+                    worksheet.write(row_idx, col_idx, cell)
+        workbook.close()
+        print(f"Excel written: {output_excel_file}")
+    else:
+        print("Invalid input file. Please provide a valid CSV file path.")

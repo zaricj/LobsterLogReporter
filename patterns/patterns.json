@@ -7,5 +7,13 @@
       "sql_exception": "(?s)exception on sql statement:\\s*(?P<sql_query>.+?)\\s*\\(transformed to.*?java\\.sql\\.[^:]+:\\s*(?P<error_details>.*?)(?:\\s+for statement|$).*?Caused by:\\s*java\\.sql\\.[^:]+:\\s*(?P<caused_by>[^\\n]*)",
       "check_failed_for_db": "(?s)check failed for alias\\s+(?P<check_failed_for>'.*?').*?Caused by:\\s*java\\.net\\.[^:]+:\\s*(?P<caused_by>[^\\n]*)"
     }
+  },
+  "db_pool_size_exceeded": {
+    "base": {
+      "header": "^(?P<time>\\d{2}:\\d{2}:\\d{2})"
+    },
+    "patterns": {
+      "default": "(?s)alias\\s+(?P<alias>\\w+):\\s+pool size already exceeded\\s+(?P<exceeded_pool_size_by>\\d+)\\.\\s+Total connections:\\s+(?P<total_connections>\\d+)"
+    }
   }
 }
