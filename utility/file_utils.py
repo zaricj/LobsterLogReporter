@@ -21,7 +21,7 @@ def validate_input(file: Path | str) -> bool:
         return False
 
 
-def count_lines(file: TextIO) -> int:
+def count_lines(file: Path) -> int:
     # Source - https://stackoverflow.com/a/9631635
     # Posted by glglgl, modified by community. See post 'Timeline' for change history
     # Retrieved 2026-04-07, License - CC BY-SA 3.0
@@ -33,7 +33,8 @@ def count_lines(file: TextIO) -> int:
                 break
             yield b
             
-    return sum(bl.count("\n") for bl in blocks(file))
+    with open(file, "rb") as f:
+        return sum(bl.count(b"\n") for bl in blocks(f))
 
 
 def get_files_in_folder(directory: Path | str, file_pattern: str = "*.log") -> list[Path]:

@@ -51,10 +51,9 @@ def yield_event_block_with_progress(
         header_pattern = re.compile(header_pattern)
 
     with open(filepath, "r", encoding="utf-8") as f:
-        total_lines = count_lines(f)
-        f.seek(0)
-
+        total_lines = count_lines(filepath)
         buffer: list[str] = []
+        
         for line in tqdm(f, total=total_lines, desc=filepath.name):
             if header_pattern.match(line):
                 if buffer:
