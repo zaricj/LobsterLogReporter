@@ -95,20 +95,20 @@ except ImportError:
 # Colour / style palette
 # ---------------------------------------------------------------------------
 PAL = {
-    "bg":        "#1A1D2E",   # deep navy background
-    "panel":     "#232640",   # slightly lighter card
-    "border":    "#2E3358",   # subtle borders
-    "accent":    "#5B8CFA",   # electric blue accent
-    "accent2":   "#7FFFD4",   # aquamarine highlight
-    "text":      "#E8EAF6",   # near-white body text
-    "muted":     "#7B82A8",   # de-emphasised text
-    "success":   "#56E39F",   # green status
-    "warn":      "#FFD166",   # amber warning
-    "error":     "#EF6461",   # red error
-    "entry_bg":  "#2A2E4A",   # input field bg
-    "btn":       "#5B8CFA",   # primary button
-    "btn_hover": "#7AA5FF",
-    "btn_text":  "#FFFFFF",
+    "bg":        "#1a1a1e",   # deep navy background
+    "panel":     "#242429",   # slightly lighter card
+    "border":    "#323237",   # subtle borders
+    "accent":    "#268954",   # electric blue accent
+    "accent2":   "#3666c0",   # aquamarine highlight
+    "text":      "#fefefe",   # near-white body text
+    "muted":     "#8d9096",   # de-emphasised text
+    "success":   "#16a34a",   # green status
+    "warn":      "#f59e0b",   # amber warning
+    "error":     "#dc2626",   # red error
+    "entry_bg":  "#3f4044",   # input field bg
+    "btn":       "#268954",   # primary button
+    "btn_hover": "#227147",
+    "btn_text":  "#fefefe",
 }
 
 FONT_MONO  = ("Courier New", 9)
@@ -622,12 +622,6 @@ class LogParserApp(tk.Tk):
         sys.stdout  = redirector
 
         try:
-            if not _CORE_IMPORTED:
-                raise RuntimeError(
-                    "modules.py is not importable. "
-                    "Place it in the same folder as this GUI."
-                )
-
             run_pipeline(
                 patterns_config=cfg["patterns_config"],
                 pattern_key=cfg["pattern_key"],
