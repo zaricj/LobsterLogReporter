@@ -34,10 +34,11 @@
   },
   "catalina_out_jasperserver": {
     "base": {
-      "separator": "^(?P<time>)\\d{2}-\\w{3}-\\d{4}\\s+\\d{2}:\\d{2}:\\d{2}.\\d{3}"
+      "separator": "^(\\d{2}-\\w{3}-\\d{4}|\\d{4}-\\d{2}-\\d{2}T)"
     },
     "patterns": {
-      "catalina_out_default": "(?P<time>\\d{2}-\\w{3}-\\d{4}\\s+\\d{2}:\\d{2}:\\d{2}\\.\\d{3})\\s+(?P<Severity>[A-Z]+)\\s+\\[.*?\\]\\s+(?P<Message>[^\r\n]+)[\\s\\S]*?Caused by:\\s+(?P<Cause>[^\r\n]+)"
+      "catalina_out_severe": "(?P<time>\\d{2}-\\w{3}-\\d{4}\\s[\\d:.]+)\\s+(?P<Severity>SEVERE)\\s+\\[(?P<Header>[^\\]]+)\\]\\s+(?P<Message>[^\\r\\n]+)(?:[\\s\\S]*?Caused by:\\s+(?P<Cause>[^\\r\\n]+))?",
+      "catalina_out_error": "(?P<time>\\d{4}-\\d{2}-\\d{2}T[\\d:,]+)\\s+(?P<Severity>ERROR)\\s+(?P<Header>[\\w,:-]+)\\s+-\\s+(?P<Message>[^\\r\\n]+)(?:[\\s\\S]*?Caused by:\\s+(?P<Cause>[^\\r\\n]+))?"
     }
   }
 }
