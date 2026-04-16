@@ -93,12 +93,6 @@ def extract_matches_from_event_block(event_block: str, compiled_patterns: dict) 
                 # If match was found by pattern A, pattern B won't overwrite it.
                 if value and not row.get(key):
                     row[key] = value
-                    
-    # Patterns
-    for _, regex in compiled_patterns["patterns"].items():
-        match = regex.search(event_block)
-        if match:
-            row.update(match.groupdict())
 
     return row
 
