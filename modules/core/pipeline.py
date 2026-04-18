@@ -1,4 +1,5 @@
 from pathlib import Path
+from typing import Any
 import time
 
 from modules.config.config import load_pattern_search_rule
@@ -8,7 +9,6 @@ from modules.core.parser import (
     yield_event_block,
     extract_matches_from_event_block,
     is_keyword_event,
-    extract_log_date,
     yield_event_block_with_progress
 )
 from modules.utils.thread_executor import run_with_threading
@@ -25,10 +25,10 @@ def collect_rows_and_headers(
     headers = []
     rows = []
     
-    files_info: list[dict[str, str]] = run_with_threading(get_file_info, files)
+    files_info: list[dict[str, Any]] = run_with_threading(get_file_info, files)
 
     for file in files_info:
-        timestamp = file["Modified"]
+        date_modified = file["Modified"].split("-")[0].strip()
         filepath = file["Filepath"]
         total_lines = file["Lines"]
         
@@ -53,10 +53,10 @@ def collect_rows_and_headers(
 
             # Timestamp handling
             if "time" in row:
-                row["timestamp"] = row["time"].strip()
+                row["timestamp"] = f"{date_modified} {row["time"].strip()}"
                 del row["time"]
             else:
-                row["timestamp"] = timestamp
+                row["timestamp"] = date_modified
 
             # Filter empty rows (ignore timestamp)
             if not any(
@@ -90,8 +90,7 @@ def run_pipeline(
     
     start = time.time() # Process start time
 
-    compiled, separator_regex = load_pattern_search_rule(
-        patterns_config, pattern_key)
+    compiled, separator_regex = load_pattern_search_rule(patterns_config, pattern_key)
 
     files = get_files_in_folder(files_directory, file_pattern)
 

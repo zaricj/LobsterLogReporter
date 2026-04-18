@@ -1,5 +1,5 @@
 from pathlib import Path
-from typing import TextIO
+from typing import Any, TextIO
 from modules.io.converters import str_to_path, epoch_to_timestamp
 
 # ========== I/O ==========
@@ -78,7 +78,7 @@ def get_file_created_on_date(filepath: Path | str) -> str:
     return file_created_on
 
 
-def get_file_info(filepath: Path) -> dict[str, str]:
+def get_file_info(filepath: Path) -> dict[str, Any]:
     try:
         stat = filepath.stat()
         data = {
