@@ -2,11 +2,14 @@ import re
 from pathlib import Path
 
 from modules.utils.utilities import load_patterns_json, compile_regex_patterns
-from modules.io.file_utils import validate_input
+from modules.io.file_utils import validate_file
 
 # ========== Config ==========
 
-def load_pattern_search_rule(patterns_config: Path, pattern_key: str) -> tuple[dict, re.Pattern]:
+
+def load_pattern_search_rule(
+    patterns_config: Path, pattern_key: str
+) -> tuple[dict, re.Pattern]:
     """Load the selected pattern `JSON` file which contains the regex ruleset for searching
 
     Args:
@@ -21,9 +24,8 @@ def load_pattern_search_rule(patterns_config: Path, pattern_key: str) -> tuple[d
         tuple[dict, re.Pattern]: The compiled pattern rule's regexes and the separator regex for event blocks.
     """
     # Validate if patterns config exists
-    if not validate_input(patterns_config):
-        raise FileNotFoundError(
-            f"Patterns config file not found: {patterns_config}")
+    if not validate_file(patterns_config):
+        raise FileNotFoundError(f"Patterns config file not found: {patterns_config}")
 
     # Load and validate patterns JSON
     patterns_json = load_patterns_json(patterns_config)
@@ -32,7 +34,8 @@ def load_pattern_search_rule(patterns_config: Path, pattern_key: str) -> tuple[d
     # Validate pattern_key exists
     if pattern_key not in patterns_json:
         raise ValueError(
-            f"Invalid pattern key: '{pattern_key}'. Available keys: {list(patterns_json.keys())}")
+            f"Invalid pattern key: '{pattern_key}'. Available keys: {list(patterns_json.keys())}"
+        )
 
     # Compile patterns for the selected category
     compiled = compile_regex_patterns(patterns_json[pattern_key])
@@ -68,44 +71,49 @@ def validate_patterns_config(patterns_json: dict[str, dict[str, dict[str, str]]]
 
         # Check required keys
         if "base" not in category_config:
-            raise ValueError(
-                f"Category '{category_name}' missing 'base' section")
+            raise ValueError(f"Category '{category_name}' missing 'base' section")
         if "patterns" not in category_config:
-            raise ValueError(
-                f"Category '{category_name}' missing 'patterns' section")
+            raise ValueError(f"Category '{category_name}' missing 'patterns' section")
 
         # Validate base section
         base = category_config["base"]
         if not isinstance(base, dict):
             raise TypeError(
-                f"'base' in category '{category_name}' must be a dictionary")
+                f"'base' in category '{category_name}' must be a dictionary"
+            )
         if "separator" not in base:
             raise ValueError(
-                f"'base' in category '{category_name}' missing 'separator'")
+                f"'base' in category '{category_name}' missing 'separator'"
+            )
         if not isinstance(base["separator"], str):
             raise TypeError(
-                f"'separator' in category '{category_name}' must be a string")
+                f"'separator' in category '{category_name}' must be a string"
+            )
 
         # Validate patterns section
         patterns = category_config["patterns"]
         if not isinstance(patterns, dict):
             raise TypeError(
-                f"'patterns' in category '{category_name}' must be a dictionary")
+                f"'patterns' in category '{category_name}' must be a dictionary"
+            )
         for pattern_name, pattern_regex in patterns.items():
             if not isinstance(pattern_regex, str):
                 raise TypeError(
-                    f"Pattern '{pattern_name}' in category '{category_name}' must be a string")
+                    f"Pattern '{pattern_name}' in category '{category_name}' must be a string"
+                )
 
         # Validate regex compilation
         try:
             re.compile(base["separator"])
         except re.error as e:
             raise ValueError(
-                f"Invalid regex in 'separator' for category '{category_name}': {e}")
+                f"Invalid regex in 'separator' for category '{category_name}': {e}"
+            )
 
         for pattern_name, pattern_regex in patterns.items():
             try:
                 re.compile(pattern_regex, re.MULTILINE | re.DOTALL)
             except re.error as e:
                 raise ValueError(
-                    f"Invalid regex in pattern '{pattern_name}' for category '{category_name}': {e}")
+                    f"Invalid regex in pattern '{pattern_name}' for category '{category_name}': {e}"
+                )

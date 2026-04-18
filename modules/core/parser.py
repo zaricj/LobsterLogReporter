@@ -4,6 +4,7 @@ from datetime import datetime
 from tqdm import tqdm
 from typing import (Iterator, Dict)
 
+from modules.io.converters import str_to_path
 from modules.io.file_utils import count_lines
 
 
@@ -22,6 +23,8 @@ def yield_event_block(filepath: str | Path, separator_pattern: str | re.Pattern)
 
     if isinstance(separator_pattern, str):
         separator_pattern = re.compile(separator_pattern)
+        
+    filepath = str_to_path(filepath)
 
     buffer = []
     with open(filepath, "r", encoding="utf-8") as f:
@@ -38,15 +41,21 @@ def yield_event_block(filepath: str | Path, separator_pattern: str | re.Pattern)
 
 
 def yield_event_block_with_progress(
-    filepath: Path,
+    filepath: Path | str,
     separator_pattern: re.Pattern,
+    total_lines: int = 0
 ) -> Iterator[str]:
 
     if isinstance(separator_pattern, str):
         separator_pattern = re.compile(separator_pattern)
-
+        
+    filepath = str_to_path(filepath)
+    
     with open(filepath, "r", encoding="utf-8") as f:
-        total_lines = count_lines(filepath)
+        
+        if total_lines == 0:
+            total_lines = count_lines(filepath) # Count via func, else use passed
+            
         buffer: list[str] = []
 
         for line in tqdm(f, total=total_lines, desc=filepath.name):

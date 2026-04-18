@@ -11,11 +11,11 @@ if __name__ == "__main__":
     
     # Search patterns config
     PATTERNS_CONFIG = Path("patterns/patterns.json")
-    PATTERN_KEY = "catalina_out_jasperserver"
+    PATTERN_KEY = "sql_exceptions"
     
     # File(s) to search config
-    FILE_PATTERN = "*.out"
-    FILES_DIR = Path(r"C:\Users\ZaricJ\Downloads\Druckserver Auswertung\NESAS015")
+    FILE_PATTERN = "*.log"
+    FILES_DIR = Path("logs")
 
     # CSV output
     OUTPUT_DIR = Path("output")

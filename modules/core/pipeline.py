@@ -1,8 +1,9 @@
 from pathlib import Path
+import time
 
 from modules.config.config import load_pattern_search_rule
-from modules.io.file_utils import get_files_in_folder
-from modules.io.exporters import write_csv, convert_csv_to_excel
+from modules.io.file_utils import (get_files_in_folder, get_file_info)
+from modules.io.exporters import (write_csv, convert_csv_to_excel)
 from modules.core.parser import (
     yield_event_block,
     extract_matches_from_event_block,
@@ -10,6 +11,7 @@ from modules.core.parser import (
     extract_log_date,
     yield_event_block_with_progress
 )
+from modules.utils.thread_executor import run_with_threading
 
 # ========== Rows and headers Generator ==========
 
@@ -22,34 +24,41 @@ def collect_rows_and_headers(
 ):
     headers = []
     rows = []
+    
+    files_info: list[dict[str, str]] = run_with_threading(get_file_info, files)
 
-    for file in files:
-        log_date = extract_log_date(file)
-        print(f"Processing: {file}")
-
+    for file in files_info:
+        timestamp = file["Modified"]
+        filepath = file["Filepath"]
+        total_lines = file["Lines"]
+        
+        # Work
+        print(f"Processing: {filepath}")
+        
         # Choose generator once
         block_iter = (
-            yield_event_block_with_progress(file, separator_regex)
+            yield_event_block_with_progress(filepath, separator_regex, total_lines)
             if show_progress
-            else yield_event_block(file, separator_regex)
+            else yield_event_block(filepath, separator_regex)
         )
-
+        
         for block in block_iter:
             if keyword and not is_keyword_event(keyword, block):
                 continue
 
             row = extract_matches_from_event_block(block, compiled)
+            
             if not row:
                 continue
 
-            # timestamp handling
+            # Timestamp handling
             if "time" in row:
-                row["timestamp"] = f"{log_date} {row['time']}".strip()
+                row["timestamp"] = row["time"].strip()
                 del row["time"]
             else:
-                row["timestamp"] = log_date
+                row["timestamp"] = timestamp
 
-            # filter empty rows (ignore timestamp)
+            # Filter empty rows (ignore timestamp)
             if not any(
                 v not in (None, "")
                 for k, v in row.items()
@@ -76,7 +85,10 @@ def run_pipeline(
         file_pattern: str,
         output_csv: Path,
         event_keyword: str = "",
-        show_progress: bool = False):
+        show_progress: bool = False
+):
+    
+    start = time.time() # Process start time
 
     compiled, separator_regex = load_pattern_search_rule(
         patterns_config, pattern_key)
@@ -105,3 +117,7 @@ def run_pipeline(
         convert_csv_to_excel(output_csv, output_excel)
     else:
         print("No matches found, nothing to write.")
+        
+    end = time.time() # Process end time
+    total_time = f"{end - start:.2f}" # Total time taken
+    print(f"\nProcess finished in {total_time} seconds.")

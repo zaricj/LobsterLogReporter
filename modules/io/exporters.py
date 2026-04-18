@@ -3,9 +3,10 @@ import xlsxwriter
 from pathlib import Path
 from typing import Iterator
 
-from modules.io.file_utils import validate_input, create_directory
+from modules.io.file_utils import validate_file, create_directory
 
 # ========== CSV ==========
+
 
 def write_csv(output: Path, headers: list[str], rows: Iterator[dict]) -> int:
     """Writes rows to a CSV file with the specified headers.
@@ -20,17 +21,12 @@ def write_csv(output: Path, headers: list[str], rows: Iterator[dict]) -> int:
     """
     count = 0
 
-    exists = validate_input(output)
-    if not exists:
+    if not output.parent.exists():
         create_directory(output)
 
     with open(output, "w", newline="", encoding="utf-8") as f:
         writer = csv.DictWriter(
-            f,
-            fieldnames=headers,
-            delimiter=";",
-            quotechar='"',
-            quoting=csv.QUOTE_ALL
+            f, fieldnames=headers, delimiter=";", quotechar='"', quoting=csv.QUOTE_ALL
         )
 
         writer.writeheader()
@@ -42,11 +38,13 @@ def write_csv(output: Path, headers: list[str], rows: Iterator[dict]) -> int:
 
     return count
 
+
 # ========== Excel Conversion ==========
+
 
 def convert_csv_to_excel(input_csv_file: Path, output_excel_file: Path):
     # Validate csv input file
-    is_csv_valid = validate_input(input_csv_file)
+    is_csv_valid = validate_file(input_csv_file)
 
     if is_csv_valid:
         print("Converting CSV to Excel, please wait...")
@@ -65,7 +63,8 @@ def convert_csv_to_excel(input_csv_file: Path, output_excel_file: Path):
                         # Attempt to convert to int
                         num_value = int(cell)
                         worksheet.write_number(
-                            row_idx, col_idx, num_value, number_format)
+                            row_idx, col_idx, num_value, number_format
+                        )
                     except ValueError:
                         # If not a number, write as string
                         worksheet.write(row_idx, col_idx, cell)

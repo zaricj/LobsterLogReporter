@@ -33,8 +33,9 @@ try:
         get_pattern_keys,
         load_patterns_json,
         run_pipeline,
-        validate_input,
+        validate_file,
     )
+
     _CORE_IMPORTED = True
 except ImportError:
     _CORE_IMPORTED = False
@@ -51,8 +52,7 @@ except ImportError:
     def compile_regex_patterns(category_config: dict) -> dict:
         compiled: dict = {}
         compiled["base"] = {
-            name: re.compile(p)
-            for name, p in category_config.get("base", {}).items()
+            name: re.compile(p) for name, p in category_config.get("base", {}).items()
         }
         compiled["patterns"] = {
             name: re.compile(p, re.MULTILINE | re.DOTALL)
@@ -60,7 +60,7 @@ except ImportError:
         }
         return compiled
 
-    def validate_input(file) -> bool:
+    def validate_file(file) -> bool:
         try:
             if not file:
                 return False
@@ -95,32 +95,33 @@ except ImportError:
 # Colour / style palette
 # ---------------------------------------------------------------------------
 PAL = {
-    "bg":        "#1a1a1e",   # deep navy background
-    "panel":     "#242429",   # slightly lighter card
-    "border":    "#323237",   # subtle borders
-    "accent":    "#268954",   # electric blue accent
-    "accent2":   "#3666c0",   # aquamarine highlight
-    "text":      "#fefefe",   # near-white body text
-    "muted":     "#8d9096",   # de-emphasised text
-    "success":   "#16a34a",   # green status
-    "warn":      "#f59e0b",   # amber warning
-    "error":     "#dc2626",   # red error
-    "entry_bg":  "#3f4044",   # input field bg
-    "btn":       "#268954",   # primary button
+    "bg": "#1a1a1e",  # deep navy background
+    "panel": "#242429",  # slightly lighter card
+    "border": "#323237",  # subtle borders
+    "accent": "#268954",  # electric blue accent
+    "accent2": "#3666c0",  # aquamarine highlight
+    "text": "#fefefe",  # near-white body text
+    "muted": "#8d9096",  # de-emphasised text
+    "success": "#16a34a",  # green status
+    "warn": "#f59e0b",  # amber warning
+    "error": "#dc2626",  # red error
+    "entry_bg": "#3f4044",  # input field bg
+    "btn": "#268954",  # primary button
     "btn_hover": "#227147",
-    "btn_text":  "#fefefe",
+    "btn_text": "#fefefe",
 }
 
-FONT_MONO  = ("Courier New", 9)
-FONT_BODY  = ("Segoe UI", 10)
+FONT_MONO = ("Courier New", 9)
+FONT_BODY = ("Segoe UI", 10)
 FONT_LABEL = ("Segoe UI", 10, "bold")
-FONT_H1    = ("Segoe UI", 14, "bold")
-FONT_H2    = ("Segoe UI", 11, "bold")
+FONT_H1 = ("Segoe UI", 14, "bold")
+FONT_H2 = ("Segoe UI", 11, "bold")
 
 
 # ---------------------------------------------------------------------------
 # Helpers
 # ---------------------------------------------------------------------------
+
 
 def _styled_entry(parent, textvariable=None, width=40, **kw) -> tk.Entry:
     e = tk.Entry(
@@ -195,8 +196,8 @@ class HoverButton(tk.Button):
 # Main application window
 # ---------------------------------------------------------------------------
 
-class LogParserApp(tk.Tk):
 
+class LogParserApp(tk.Tk):
     def __init__(self):
         super().__init__()
         self.title("Log Parser Pipeline")
@@ -206,14 +207,14 @@ class LogParserApp(tk.Tk):
 
         # ---- state variables ------------------------------------------------
         self.patterns_config_var = tk.StringVar()
-        self.pattern_key_var     = tk.StringVar()
-        self.files_dir_var       = tk.StringVar()
-        self.file_pattern_var    = tk.StringVar(value="*.log")
-        self.output_csv_var      = tk.StringVar()
-        self.keyword_var         = tk.StringVar()
+        self.pattern_key_var = tk.StringVar()
+        self.files_dir_var = tk.StringVar()
+        self.file_pattern_var = tk.StringVar(value="*.log")
+        self.output_csv_var = tk.StringVar()
+        self.keyword_var = tk.StringVar()
 
         self._pattern_keys: list[str] = []
-        self._log_queue: queue.Queue  = queue.Queue()
+        self._log_queue: queue.Queue = queue.Queue()
         self._running = False
 
         self._build_ui()
@@ -270,9 +271,7 @@ class LogParserApp(tk.Tk):
         run_bar = tk.Frame(self, bg=PAL["bg"], pady=10)
         run_bar.pack(fill="x", padx=18)
 
-        self._progress = ttk.Progressbar(
-            run_bar, mode="indeterminate", length=300
-        )
+        self._progress = ttk.Progressbar(run_bar, mode="indeterminate", length=300)
         self._progress.pack(side="left", padx=(0, 16))
 
         self._run_btn = HoverButton(
@@ -286,8 +285,12 @@ class LogParserApp(tk.Tk):
             command=self._clear_log,
         )
         self._clear_btn.config(bg=PAL["border"])
-        self._clear_btn.bind("<Enter>", lambda _: self._clear_btn.config(bg=PAL["muted"]))
-        self._clear_btn.bind("<Leave>", lambda _: self._clear_btn.config(bg=PAL["border"]))
+        self._clear_btn.bind(
+            "<Enter>", lambda _: self._clear_btn.config(bg=PAL["muted"])
+        )
+        self._clear_btn.bind(
+            "<Leave>", lambda _: self._clear_btn.config(bg=PAL["border"])
+        )
         self._clear_btn.pack(side="left", padx=8)
 
     # --- Config panel -------------------------------------------------------
@@ -301,7 +304,9 @@ class LogParserApp(tk.Tk):
         row.pack(fill="x", pady=(2, 10))
         e = _styled_entry(row, textvariable=self.patterns_config_var, width=28)
         e.pack(side="left", fill="x", expand=True, ipady=5, padx=(0, 6))
-        HoverButton(row, text="…", command=self._browse_patterns, padx=8, pady=4).pack(side="left")
+        HoverButton(row, text="…", command=self._browse_patterns, padx=8, pady=4).pack(
+            side="left"
+        )
         self.patterns_config_var.trace_add("write", self._on_patterns_file_change)
 
         # Pattern key dropdown
@@ -322,7 +327,9 @@ class LogParserApp(tk.Tk):
         _styled_entry(row2, textvariable=self.files_dir_var, width=28).pack(
             side="left", fill="x", expand=True, ipady=5, padx=(0, 6)
         )
-        HoverButton(row2, text="…", command=self._browse_files_dir, padx=8, pady=4).pack(side="left")
+        HoverButton(
+            row2, text="…", command=self._browse_files_dir, padx=8, pady=4
+        ).pack(side="left")
 
         # File pattern
         _label(parent, "File Pattern").pack(fill="x")
@@ -337,7 +344,9 @@ class LogParserApp(tk.Tk):
         _styled_entry(row3, textvariable=self.output_csv_var, width=28).pack(
             side="left", fill="x", expand=True, ipady=5, padx=(0, 6)
         )
-        HoverButton(row3, text="…", command=self._browse_output_csv, padx=8, pady=4).pack(side="left")
+        HoverButton(
+            row3, text="…", command=self._browse_output_csv, padx=8, pady=4
+        ).pack(side="left")
 
         # Optional keyword filter
         _section_label(parent, "Filter").pack(fill="x", pady=(12, 6))
@@ -381,12 +390,12 @@ class LogParserApp(tk.Tk):
         self._log_area.pack(fill="both", expand=True)
 
         # Configure colour tags
-        self._log_area.tag_config("info",    foreground=PAL["text"])
+        self._log_area.tag_config("info", foreground=PAL["text"])
         self._log_area.tag_config("success", foreground=PAL["success"])
-        self._log_area.tag_config("warn",    foreground=PAL["warn"])
-        self._log_area.tag_config("error",   foreground=PAL["error"])
-        self._log_area.tag_config("accent",  foreground=PAL["accent"])
-        self._log_area.tag_config("muted",   foreground=PAL["muted"])
+        self._log_area.tag_config("warn", foreground=PAL["warn"])
+        self._log_area.tag_config("error", foreground=PAL["error"])
+        self._log_area.tag_config("accent", foreground=PAL["accent"])
+        self._log_area.tag_config("muted", foreground=PAL["muted"])
 
     # ------------------------------------------------------------------
     # Combobox theme patch
@@ -406,7 +415,9 @@ class LogParserApp(tk.Tk):
             borderwidth=0,
         )
         style.map("TCombobox", fieldbackground=[("readonly", PAL["entry_bg"])])
-        style.configure("TProgressbar", troughcolor=PAL["border"], background=PAL["accent"])
+        style.configure(
+            "TProgressbar", troughcolor=PAL["border"], background=PAL["accent"]
+        )
 
     # ------------------------------------------------------------------
     # File / directory browsers
@@ -462,9 +473,7 @@ class LogParserApp(tk.Tk):
             if current not in keys:
                 self.pattern_key_var.set(keys[0])
             self._update_pattern_preview()
-            self._log(
-                f"Loaded {len(keys)} pattern key(s) from {path.name}", "success"
-            )
+            self._log(f"Loaded {len(keys)} pattern key(s) from {path.name}", "success")
         else:
             self._log("[warn] Patterns JSON has no keys.", "warn")
 
@@ -474,7 +483,7 @@ class LogParserApp(tk.Tk):
     def _update_pattern_preview(self):
         """Display the raw regex strings for the selected key in the preview box."""
         path_str = self.patterns_config_var.get().strip()
-        key      = self.pattern_key_var.get().strip()
+        key = self.pattern_key_var.get().strip()
         if not path_str or not key:
             return
 
@@ -513,6 +522,7 @@ class LogParserApp(tk.Tk):
         timestamp = datetime.now().strftime("%H:%M:%S") if "datetime" in dir() else ""
         try:
             from datetime import datetime as _dt
+
             timestamp = _dt.now().strftime("%H:%M:%S")
         except Exception:
             pass
@@ -586,11 +596,11 @@ class LogParserApp(tk.Tk):
         # Gather config snapshot
         cfg = {
             "patterns_config": Path(self.patterns_config_var.get().strip()),
-            "pattern_key":     self.pattern_key_var.get().strip(),
+            "pattern_key": self.pattern_key_var.get().strip(),
             "files_directory": Path(self.files_dir_var.get().strip()),
-            "file_pattern":    self.file_pattern_var.get().strip(),
-            "output_csv":      Path(self.output_csv_var.get().strip()),
-            "event_keyword":   self.keyword_var.get().strip(),
+            "file_pattern": self.file_pattern_var.get().strip(),
+            "output_csv": Path(self.output_csv_var.get().strip()),
+            "event_keyword": self.keyword_var.get().strip(),
         }
 
         self._running = True
@@ -600,7 +610,9 @@ class LogParserApp(tk.Tk):
         self._qlog("─" * 50, "muted")
         self._qlog(f"Starting pipeline  [key={cfg['pattern_key']}]", "accent")
 
-        thread = threading.Thread(target=self._run_pipeline_thread, args=(cfg,), daemon=True)
+        thread = threading.Thread(
+            target=self._run_pipeline_thread, args=(cfg,), daemon=True
+        )
         thread.start()
 
     def _run_pipeline_thread(self, cfg: dict):
@@ -610,16 +622,18 @@ class LogParserApp(tk.Tk):
         class _Redirector(io.TextIOBase):
             def __init__(self_inner):
                 self_inner._buf = ""
+
             def write(self_inner, s):
                 if s.strip():
                     self._qlog(s.rstrip(), "info")
                 return len(s)
+
             def flush(self_inner):
                 pass
 
         redirector = _Redirector()
-        old_stdout  = sys.stdout
-        sys.stdout  = redirector
+        old_stdout = sys.stdout
+        sys.stdout = redirector
 
         try:
             run_pipeline(
@@ -632,7 +646,7 @@ class LogParserApp(tk.Tk):
             )
 
             # Check outputs
-            csv_path   = cfg["output_csv"]
+            csv_path = cfg["output_csv"]
             excel_path = csv_path.with_suffix(".xlsx")
 
             if csv_path.exists():
@@ -646,6 +660,7 @@ class LogParserApp(tk.Tk):
         except Exception as exc:
             self._qlog(f"✘  Error: {exc}", "error")
             import traceback
+
             for line in traceback.format_exc().splitlines():
                 self._qlog(line, "error")
             self.after(0, lambda: self._set_status("Error", PAL["error"]))
@@ -669,6 +684,7 @@ class LogParserApp(tk.Tk):
 # ---------------------------------------------------------------------------
 
 if __name__ == "__main__":
-    from datetime import datetime   # noqa: F811 (needed for timestamp in _log)
+    from datetime import datetime  # noqa: F811 (needed for timestamp in _log)
+
     app = LogParserApp()
     app.mainloop()

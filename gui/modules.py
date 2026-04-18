@@ -4,9 +4,10 @@ import re
 import csv
 import xlsxwriter
 import json
-from typing import (Iterator, TextIO, Dict)
+from typing import Iterator, TextIO, Dict
 
 # ========== Utility ==========
+
 
 def yield_event_block(filepath: str | Path, separator_pattern: str | re.Pattern):
     """Yields the files event block, using a separator pattern
@@ -40,7 +41,9 @@ def yield_event_block(filepath: str | Path, separator_pattern: str | re.Pattern)
             yield "".join(buffer)
 
 
-def extract_matches_from_event_block(event_block: str, compiled_patterns: dict) -> Dict[str, str]:
+def extract_matches_from_event_block(
+    event_block: str, compiled_patterns: dict
+) -> Dict[str, str]:
     """Extract the matches from the event block of text, with the compiled regex patterns.
 
     Args:
@@ -115,11 +118,12 @@ def is_keyword_event(keyword: str, event_block: str) -> bool:
     """
     return keyword.lower() in event_block.lower()
 
+
 # ========== Config ==========
 
 
 def load_config(patterns_config: Path, pattern_key: str) -> tuple[dict, re.Pattern]:
-    if not validate_input(patterns_config):
+    if not validate_file(patterns_config):
         raise FileNotFoundError(patterns_config)
 
     patterns_json = load_patterns_json(patterns_config)
@@ -131,6 +135,7 @@ def load_config(patterns_config: Path, pattern_key: str) -> tuple[dict, re.Patte
     separator_regex = compiled["base"]["separator"]
 
     return compiled, separator_regex
+
 
 # ========== CSV ==========
 
@@ -148,17 +153,12 @@ def write_csv(output: Path, headers: list[str], rows: Iterator[dict]) -> int:
     """
     count = 0
 
-    exists = validate_input(output)
-    if not exists:
+    if not output.parent.exists():
         create_directory(output)
 
     with open(output, "w", newline="", encoding="utf-8") as f:
         writer = csv.DictWriter(
-            f,
-            fieldnames=headers,
-            delimiter=";",
-            quotechar='"',
-            quoting=csv.QUOTE_ALL
+            f, fieldnames=headers, delimiter=";", quotechar='"', quoting=csv.QUOTE_ALL
         )
 
         writer.writeheader()
@@ -170,12 +170,13 @@ def write_csv(output: Path, headers: list[str], rows: Iterator[dict]) -> int:
 
     return count
 
+
 # ========== Excel Conversion ==========
 
 
 def convert_csv_to_excel(input_csv_file: Path, output_excel_file: Path):
     # Validate csv input file
-    is_csv_valid = validate_input(input_csv_file)
+    is_csv_valid = validate_file(input_csv_file)
 
     if is_csv_valid:
         print("Converting CSV to Excel, please wait...")
@@ -194,7 +195,8 @@ def convert_csv_to_excel(input_csv_file: Path, output_excel_file: Path):
                         # Attempt to convert to int
                         num_value = int(cell)
                         worksheet.write_number(
-                            row_idx, col_idx, num_value, number_format)
+                            row_idx, col_idx, num_value, number_format
+                        )
                     except ValueError:
                         # If not a number, write as string
                         worksheet.write(row_idx, col_idx, cell)
@@ -203,10 +205,11 @@ def convert_csv_to_excel(input_csv_file: Path, output_excel_file: Path):
     else:
         print("Invalid input file. Please provide a valid CSV file path.")
 
+
 # ========== I/O ==========
 
 
-def validate_input(file: Path | str) -> bool:
+def validate_file(file: Path | str) -> bool:
     try:
         # First check if file is not None
         if not file:
@@ -217,8 +220,7 @@ def validate_input(file: Path | str) -> bool:
 
         # If not None, check if file exists
         if not file.exists():
-            raise FileNotFoundError(
-                f"The specified file '{file}' does not exist.")
+            raise FileNotFoundError(f"The specified file '{file}' does not exist.")
         else:
             return True
     except FileNotFoundError:
@@ -241,7 +243,9 @@ def count_lines(file: Path) -> int:
         return sum(bl.count(b"\n") for bl in blocks(f))
 
 
-def get_files_in_folder(directory: Path | str, file_pattern: str = "*.log") -> list[Path]:
+def get_files_in_folder(
+    directory: Path | str, file_pattern: str = "*.log"
+) -> list[Path]:
     """Get files from a directory, of specific type
 
     Args:
@@ -265,6 +269,7 @@ def create_directory(directory: Path | str):
     Path.mkdir(directory.parent, exist_ok=True)
     print(f"Created directory successfully: '{directory.__str__()}'")
 
+
 # ========== Load & Compile Patterns ==========
 
 
@@ -285,11 +290,15 @@ def compile_regex(pattern: str, flags=0):
 def compile_regex_patterns(category_config: dict):
     """Compile base separator + patterns for one category"""
     compiled = {}
-    compiled["base"] = {name: re.compile(
-        p) for name, p in category_config.get("base", {}).items()}
-    compiled["patterns"] = {name: re.compile(p, re.MULTILINE | re.DOTALL)
-                            for name, p in category_config.get("patterns", {}).items()}
+    compiled["base"] = {
+        name: re.compile(p) for name, p in category_config.get("base", {}).items()
+    }
+    compiled["patterns"] = {
+        name: re.compile(p, re.MULTILINE | re.DOTALL)
+        for name, p in category_config.get("patterns", {}).items()
+    }
     return compiled
+
 
 # ========== Rows and headers Generator ==========
 
@@ -323,11 +332,7 @@ def collect_rows_and_headers(
                 row["timestamp"] = log_date
 
             # filter empty rows (ignore timestamp)
-            if not any(
-                v not in (None, "")
-                for k, v in row.items()
-                if k != "timestamp"
-            ):
+            if not any(v not in (None, "") for k, v in row.items() if k != "timestamp"):
                 continue
 
             # collect headers (ordered, no duplicates)
@@ -342,13 +347,14 @@ def collect_rows_and_headers(
 
 # ========== Pipeline ==========
 
+
 def run_pipeline(
-        patterns_config: Path,
-        pattern_key: str,
-        files_directory: Path,
-        file_pattern: str,
-        output_csv: Path,
-        event_keyword: str = ""
+    patterns_config: Path,
+    pattern_key: str,
+    files_directory: Path,
+    file_pattern: str,
+    output_csv: Path,
+    event_keyword: str = "",
 ):
 
     compiled, separator_regex = load_config(patterns_config, pattern_key)
@@ -357,7 +363,8 @@ def run_pipeline(
 
     if not files:
         raise ValueError(
-            f"No files found in {files_directory}, using pattern {file_pattern}")
+            f"No files found in {files_directory}, using pattern {file_pattern}"
+        )
 
     # Collect rows + headers in one pass
     rows, headers = collect_rows_and_headers(
@@ -365,8 +372,7 @@ def run_pipeline(
     )
 
     # Normalize headers
-    headers = ["timestamp"] + \
-        [h for h in headers if h not in ("time", "timestamp")]
+    headers = ["timestamp"] + [h for h in headers if h not in ("time", "timestamp")]
 
     # Write CSV if data was found
     if rows:
@@ -380,7 +386,6 @@ def run_pipeline(
 
 
 if __name__ == "__main__":
-
     PATTERNS_CONFIG = Path("patterns/patterns.json")
     PATTERN_KEY = "sql_exceptions"
     FILE_PATTERN = "*.log"
@@ -406,5 +411,5 @@ if __name__ == "__main__":
         file_pattern=FILE_PATTERN,
         output_csv=CSV_FILE,
         event_keyword="",
-        show_progress=True
+        show_progress=True,
     )
