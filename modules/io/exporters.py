@@ -7,7 +7,6 @@ from modules.io.file_utils import validate_file, create_directory
 
 # ========== CSV ==========
 
-
 def write_csv(output: Path, headers: list[str], rows: Iterator[dict]) -> int:
     """Writes rows to a CSV file with the specified headers.
 
@@ -41,24 +40,29 @@ def write_csv(output: Path, headers: list[str], rows: Iterator[dict]) -> int:
 
 # ========== Excel Conversion ==========
 
-
 def convert_csv_to_excel(input_csv_file: Path, output_excel_file: Path):
     # Validate csv input file
     is_csv_valid = validate_file(input_csv_file)
 
     if is_csv_valid:
         print("Converting CSV to Excel, please wait...")
+        
         # Create a new Excel workbook and add a worksheet
         workbook = xlsxwriter.Workbook(str(output_excel_file))
         worksheet = workbook.add_worksheet("Data")
         number_format = workbook.add_format({"num_format": "#,##0"})
-        # Open the CSV file and read its contents using the csv module
-        # Use newline="" so the csv module can handle newlines correctly
+        
+        # Open the CSV file and read 
+        # its contents using the csv module
+        # Use newline="" so the csv module
+        # can handle newlines correctly
+        
         with open(input_csv_file, "r", newline="", encoding="utf-8") as csvfile:
             reader = csv.reader(csvfile, delimiter=";", quotechar='"')
             for row_idx, row in enumerate(reader):
                 for col_idx, cell in enumerate(row):
-                    # Try to write as number if possible, else as string
+                    # Try to write as number
+                    # if possible else as string
                     try:
                         # Attempt to convert to int
                         num_value = int(cell)

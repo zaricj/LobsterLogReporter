@@ -59,13 +59,9 @@ def collect_rows_and_headers(
                 row["timestamp"] = date_modified
 
             # Filter empty rows (ignore timestamp)
-            if not any(
-                v not in (None, "")
-                for k, v in row.items()
-                if k != "timestamp"
-            ):
+            if not is_empty_row(row, "timestamp"):
                 continue
-
+            
             # collect headers (ordered, no duplicates)
             for key in row:
                 if key not in headers:
@@ -74,6 +70,14 @@ def collect_rows_and_headers(
             rows.append(row)
 
     return rows, headers
+
+
+def is_empty_row(row: dict, ignore_key: str) -> bool:
+    # Filter empty rows (ignore timestamp)
+    return any(
+        v not in (None, "")
+        for k, v in row.items()
+        if k != ignore_key)
 
 
 # ========== Pipeline ==========

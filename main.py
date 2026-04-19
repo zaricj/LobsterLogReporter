@@ -11,10 +11,10 @@ if __name__ == "__main__":
     
     # Search patterns config
     PATTERNS_CONFIG = Path("patterns/patterns.json")
-    PATTERN_KEY = "sql_exceptions"
+    PATTERN_KEY = "catalina_out_jasperserver"
     
     # File(s) to search config
-    FILE_PATTERN = "*.log"
+    FILE_PATTERN = "*.out"
     FILES_DIR = Path("logs")
 
     # CSV output
