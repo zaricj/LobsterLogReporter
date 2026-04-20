@@ -1,94 +1,19 @@
 from pathlib import Path
-from typing import Any
-from rich import print as rprint
 from rich.console import Console
 from rich.panel import Panel
+
 import time
 
-from modules.core.timestamp import build_timestamp
 from modules.config.config import load_pattern_search_rule
-from modules.io.file_utils import (get_files_in_folder, get_file_info)
+from modules.io.file_utils import get_files_in_folder
 from modules.io.exporters import (write_csv, convert_csv_to_excel)
-from modules.core.parser import (
-    yield_event_block,
-    extract_matches_from_event_block,
-    is_keyword_event,
-    yield_event_block_with_progress
-)
-from modules.utils.thread_executor import run_with_threading
+from modules.core.utils import collect_rows_and_headers
 
-# ========== Rows and headers Generator ==========
-
-def collect_rows_and_headers(
-    files: list,
-    separator_regex,
-    compiled,
-    keyword: str,
-    show_progress: bool
-):
-    headers = []
-    rows = []
-    
-    files_info: list[dict[str, Any]] = run_with_threading(get_file_info, files)
-
-    for file in files_info:
-        date_created: str = file["Created"].split("-")[0].strip()
-        filepath: Path = file["Filepath"]
-        total_lines: int = file["Lines"]
-        
-        # Work
-        rprint(f"[blue]Processing: {filepath.name}[/blue]")
-        
-        # Choose generator once
-        block_iter = (
-            yield_event_block_with_progress(filepath, separator_regex, total_lines)
-            if show_progress
-            else yield_event_block(filepath, separator_regex)
-        )
-        
-        for block in block_iter:
-            if keyword and not is_keyword_event(keyword, block):
-                continue
-
-            row = extract_matches_from_event_block(block, compiled)
-            
-            if not row:
-                continue
-
-            # Timestamp header handling
-            if "time" in row:
-                row["timestamp"] = build_timestamp(row["time"], filepath, date_created)
-                del row["time"]
-            else:
-                row["timestamp"] = date_created
-
-            # Filter empty rows (ignore timestamp)
-            if not is_empty_row(row, "timestamp"):
-                continue
-            
-            # collect headers (ordered, no duplicates)
-            for key in row:
-                if key not in headers:
-                    headers.append(key)
-
-            rows.append(row)
-
-    return rows, headers
-
-
-def is_empty_row(row: dict, ignore_key: str) -> bool:
-    # Filter empty rows (ignore timestamp)
-    return any(
-        v not in (None, "")
-        for k, v in row.items()
-        if k != ignore_key)
-
-
-def display_finished_msg(output_csv: Path, count: int, total_time: str, excel_msg: str, rows_found: bool = True):
+def display_finished_msg(output_csv: Path, count: int, total_time: str, excel_msg: str, rows_found: bool):
     """Display completion message with consistent styling."""
     console = Console()
     if rows_found:
-        content = f"[green]✓ Task has finished in {total_time} seconds\n\nWrote {count} rows to {output_csv}\n{excel_msg}[/green]"
+        content = f"[green]✓ Task has finished in {total_time} seconds\n\nWrote {count} rows to: {output_csv}\n{excel_msg}[/green]"
         title = "[bold green]Success[/bold green]"
     else:
         content = f"[yellow]No matches were found, nothing to write.\n\nProcess finished in {total_time} seconds.[/yellow]"
@@ -96,7 +21,6 @@ def display_finished_msg(output_csv: Path, count: int, total_time: str, excel_ms
     
     panel = Panel(content, title=title, expand=False)
     console.print(panel)
-    
 
 # ========== Pipeline ==========
 
@@ -109,6 +33,7 @@ def run_pipeline(
         event_keyword: str = "",
         show_progress: bool = False
 ):
+    Console().rule("Starting pipeline task")
     
     start = time.time() # Process start time
 

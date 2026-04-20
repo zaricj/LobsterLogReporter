@@ -7,8 +7,7 @@ from pathlib import Path
 from datetime import datetime
 from modules.core.pipeline import run_pipeline
 
-if __name__ == "__main__":
-    
+def main():
     # Search patterns config
     PATTERNS_CONFIG = Path("patterns/patterns.json")
     PATTERN_KEY = "catalina_out_jasperserver"
@@ -32,3 +31,6 @@ if __name__ == "__main__":
         event_keyword="",
         show_progress=True
     )
+
+if __name__ == "__main__":
+    main()

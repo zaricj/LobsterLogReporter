@@ -2,10 +2,7 @@ from pathlib import Path
 from typing import Any, TextIO
 from modules.io.converters import epoch_to_timestamp
 
-# ========== I/O ==========
-
-# ===== Validation and Conversion str to Path ====== #
-
+# ===== Validation ====== #
 
 def validate_file(file: Path) -> bool:
     try:
