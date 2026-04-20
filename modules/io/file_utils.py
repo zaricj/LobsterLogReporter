@@ -1,19 +1,17 @@
 from pathlib import Path
 from typing import Any, TextIO
-from modules.io.converters import str_to_path, epoch_to_timestamp
+from modules.io.converters import epoch_to_timestamp
 
 # ========== I/O ==========
 
 # ===== Validation and Conversion str to Path ====== #
 
 
-def validate_file(file: Path | str) -> bool:
+def validate_file(file: Path) -> bool:
     try:
         # First check if file is not None
         if not file:
             raise ValueError("No file provided for processing.")
-
-        file = str_to_path(file)
 
         # If not None, check if file exists
         if not file.exists():
@@ -41,7 +39,7 @@ def count_lines(filepath: Path) -> int:
 
 
 def get_files_in_folder(
-    directory: Path | str, file_pattern: str = "*.log"
+    directory: Path, file_pattern: str = "*.log"
 ) -> list[Path]:
     """Get files from a directory, of specific type
 
@@ -52,28 +50,22 @@ def get_files_in_folder(
     Returns:
         list[Path]: List of found files in the directory.
     """
-    directory = str_to_path(directory)
     if directory.is_dir() and directory.exists():
         return list(directory.glob(file_pattern))
 
 
-def create_directory(directory: Path | str):
-    directory = str_to_path(directory)
-
+def create_directory(directory: Path):
     Path.mkdir(directory.parent, exist_ok=True)
     print(f"Created directory successfully: '{directory.__str__()}'")
 
 
 # ===== File information grabbers
 
-
-def get_file_size(filepath: Path | str) -> int:
-    filepath = str_to_path(filepath)  # Ensure it's a Path object
+def get_file_size(filepath: Path) -> int:
     return filepath.stat().st_size
 
 
-def get_file_created_on_date(filepath: Path | str) -> str:
-    filepath = str_to_path(filepath)
+def get_file_created_on_date(filepath: Path) -> str:
     file_created_on = epoch_to_timestamp(filepath.stat().st_birthtime)
     return file_created_on
 
@@ -82,7 +74,7 @@ def get_file_info(filepath: Path) -> dict[str, Any]:
     try:
         stat = filepath.stat()
         data = {
-            "Filepath": filepath.__str__(),
+            "Filepath": filepath,
             "Size": stat.st_size,
             "Created": epoch_to_timestamp(stat.st_birthtime),
             "Modified": epoch_to_timestamp(stat.st_mtime),
