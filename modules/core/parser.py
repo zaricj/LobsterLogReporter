@@ -1,20 +1,18 @@
 import re
 from pathlib import Path
-from datetime import datetime
 from tqdm import tqdm
 from typing import (Iterator, Dict)
 
-from modules.io.converters import str_to_path
 from modules.io.file_utils import count_lines
 
 
 # ========== Utility ==========
 
-def yield_event_block(filepath: str | Path, separator_pattern: str | re.Pattern):
+def yield_event_block(filepath: Path, separator_pattern: str | re.Pattern):
     """Yields the files event block, using a separator pattern
 
     Args:
-        filepath (str | Path): The file to read and yield event blocks from
+        filepath (Path): The file to read and yield event blocks from
         separator_pattern (str | re.Pattern): The pattern to identify the start of an event block.
 
     Yields:
@@ -23,8 +21,6 @@ def yield_event_block(filepath: str | Path, separator_pattern: str | re.Pattern)
 
     if isinstance(separator_pattern, str):
         separator_pattern = re.compile(separator_pattern)
-        
-    filepath = str_to_path(filepath)
 
     buffer = []
     with open(filepath, "r", encoding="utf-8") as f:
@@ -41,15 +37,13 @@ def yield_event_block(filepath: str | Path, separator_pattern: str | re.Pattern)
 
 
 def yield_event_block_with_progress(
-    filepath: Path | str,
+    filepath: Path,
     separator_pattern: re.Pattern,
     total_lines: int = 0
 ) -> Iterator[str]:
 
     if isinstance(separator_pattern, str):
         separator_pattern = re.compile(separator_pattern)
-        
-    filepath = str_to_path(filepath)
     
     with open(filepath, "r", encoding="utf-8") as f:
         
@@ -104,43 +98,6 @@ def extract_matches_from_event_block(event_block: str, compiled_patterns: dict) 
                     row[key] = value
 
     return row
-
-
-def extract_log_date(filepath: Path) -> str:
-    date = ""
-
-    # Try first from the file name, if the filename contains a date
-    # Matches the patterns: 2026-04-13, 2026_04_13
-    date_regex = re.compile(r"\d{4}[-_.]\d{2}[-_.]\d{2}")
-    match = date_regex.search(filepath.with_suffix("").name)
-
-    if match:
-        date = match.group()
-        if "_" in date:  # Replace underlines with dots in date string
-            date = date.replace("_", ".")
-        return date
-
-    # Else if none was found continue from within the file, usually if it's a log file it has a date in the beginning
-    date_regex = re.compile(r"opened at (?P<date>.+?\d{4})")
-
-    with open(filepath, "r", encoding="utf-8") as f:
-        for _ in range(10):  # only scan first lines
-            line = f.readline()
-            if not line:
-                break
-
-            match = date_regex.search(line)
-
-            if match:
-                raw_date = match.group("date")
-                cleaned_date = re.sub(r"\b[A-Z]{3,4}\b", "", raw_date).strip()
-
-                dt = datetime.strptime(cleaned_date, "%a %b %d %H:%M:%S %Y")
-                date = dt.strftime("%Y-%m-%d")
-                # Return ISO date
-                return date
-
-    return date
 
 
 def is_keyword_event(keyword: str, event_block: str) -> bool:

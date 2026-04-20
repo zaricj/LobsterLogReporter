@@ -40,7 +40,7 @@ def write_csv(output: Path, headers: list[str], rows: Iterator[dict]) -> int:
 
 # ========== Excel Conversion ==========
 
-def convert_csv_to_excel(input_csv_file: Path, output_excel_file: Path):
+def convert_csv_to_excel(input_csv_file: Path, output_excel_file: Path) -> str:
     # Validate csv input file
     is_csv_valid = validate_file(input_csv_file)
 
@@ -73,6 +73,6 @@ def convert_csv_to_excel(input_csv_file: Path, output_excel_file: Path):
                         # If not a number, write as string
                         worksheet.write(row_idx, col_idx, cell)
         workbook.close()
-        print(f"Excel written: {output_excel_file}")
+        return f"CSV file converted to Excel as: {output_excel_file}"
     else:
-        print("Invalid input file. Please provide a valid CSV file path.")
+        raise FileNotFoundError("Invalid input file. Please provide a valid CSV file path.")
