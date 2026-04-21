@@ -6,12 +6,15 @@ This makes sure that a single line contains all the matches from the same event 
 from pathlib import Path
 import click
 from modules.core.pipeline import run_pipeline
+from modules.core.utils import get_pattern_keys
+
+PATTERNS_CONFIG = Path("patterns/patterns.json")
 
 @click.command()
-@click.option("--patterns_config", type=click.Path(exists=True), required=True)
-@click.option("--pattern_key", required=True)
-@click.option("--files", type=click.Path(exists=True), required=True)
-@click.option("--file_pattern", required=True)
+@click.option("--config", type=click.Path(exists=True), required=True, help="The configuration file path that holds the patterns used for searching")
+@click.option("--key", required=True, help=f"The patterns key to use it's settings for searching. Default pattern config available keys: {get_pattern_keys(PATTERNS_CONFIG)}")
+@click.option("--files_dir", type=click.Path(exists=True), required=True, help="The directory with the files which will be searched")
+@click.option("--file_pattern", required=True, help="The file pattern to only search")
 @click.option("--output_csv", type=click.Path(), required=True)
 @click.option("--event_keyword", default="", required=False)
 @click.option("--show_progress", type=bool, default=True)
