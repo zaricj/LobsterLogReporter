@@ -4,9 +4,10 @@ from pathlib import Path
 from typing import Iterator
 from rich.console import Console
 
-from modules.io.file_utils import validate_file, create_directory
+from modules.io.file_utils import validate_file, ensure_output_dir
 
 # ========== CSV ==========
+
 
 def write_csv(output: Path, headers: list[str], rows: Iterator[dict]) -> int:
     """Writes rows to a CSV file with the specified headers.
@@ -22,7 +23,7 @@ def write_csv(output: Path, headers: list[str], rows: Iterator[dict]) -> int:
     count = 0
 
     if not output.parent.exists():
-        create_directory(output)
+        ensure_output_dir(output)
 
     with open(output, "w", newline="", encoding="utf-8") as f:
         writer = csv.DictWriter(
@@ -51,12 +52,12 @@ def convert_csv_to_excel(input_csv_file: Path, output_excel_file: Path) -> str:
             workbook = xlsxwriter.Workbook(str(output_excel_file))
             worksheet = workbook.add_worksheet("Data")
             number_format = workbook.add_format({"num_format": "#,##0"})
-            
-            # Open the CSV file and read 
+
+            # Open the CSV file and read
             # its contents using the csv module
             # Use newline="" so the csv module
             # can handle newlines correctly
-            
+
             with open(input_csv_file, "r", newline="", encoding="utf-8") as csvfile:
                 reader = csv.reader(csvfile, delimiter=";", quotechar='"')
                 for row_idx, row in enumerate(reader):
@@ -75,4 +76,5 @@ def convert_csv_to_excel(input_csv_file: Path, output_excel_file: Path) -> str:
             workbook.close()
             return f"Converted to Excel as: {output_excel_file}"
     else:
-        raise FileNotFoundError("Invalid input file. Please provide a valid CSV file path.")
+        raise FileNotFoundError(
+            "Invalid input file. Please provide a valid CSV file path.")

@@ -4,6 +4,7 @@ from modules.io.converters import epoch_to_timestamp
 
 # ===== Validation ====== #
 
+
 def validate_file(file: Path) -> bool:
     try:
         # First check if file is not None
@@ -12,7 +13,8 @@ def validate_file(file: Path) -> bool:
 
         # If not None, check if file exists
         if not file.exists():
-            raise FileNotFoundError(f"The specified file '{file}' does not exist.")
+            raise FileNotFoundError(
+                f"The specified file '{file}' does not exist.")
         else:
             return True
     except FileNotFoundError:
@@ -49,9 +51,11 @@ def get_files_in_folder(
     """
     if directory.is_dir() and directory.exists():
         return list(directory.glob(file_pattern))
+    else:
+        return []
 
 
-def create_directory(directory: Path):
+def ensure_output_dir(directory: Path):
     Path.mkdir(directory.parent, exist_ok=True)
     print(f"Created directory successfully: '{directory.__str__()}'")
 
