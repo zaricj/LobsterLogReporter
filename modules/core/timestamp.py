@@ -67,9 +67,12 @@ def build_timestamp(time_str: str, cached_date: str) -> str:
     to avoid per-row disk/string logic.
     """
     t = time_str.strip()
+    if is_full_datetime(t):
+        return to_german_datetime(t)  # Already complete, nothing to add
+    
     # Check if t already looks like a full date (e.g. starts with 2026 or 15/)
-    if len(t) > 10 and (t[4] == "-" or t[2] == "/"): 
-        return to_german_datetime(t)
+    # if len(t) > 10 and (t[4] == "-" or t[2] == "/" or t[2] == "-"): 
+    #     return to_german_datetime(t)
 
     if _TIME_ONLY_RE.match(t):
         return to_german_datetime(f"{cached_date} {t}")
