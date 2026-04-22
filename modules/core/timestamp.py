@@ -33,6 +33,7 @@ _FULL_DATETIME_PATTERNS = [
 
 # Matches a bare time: 06:48:33 or 06:48:33.088 or 06:48:33,289
 _TIME_ONLY_RE = re.compile(r"^\d{2}:\d{2}:\d{2}")
+_FILENAME_DATE_RE = re.compile(r"\d{4}[-_.]\d{2}[-_.]\d{2}")
 
 
 def is_full_datetime(time_str: str) -> bool:
@@ -41,50 +42,36 @@ def is_full_datetime(time_str: str) -> bool:
 
 
 def extract_date_from_filename(filepath: Path) -> str:
-    """Extract a date string from the filename (YYYY-MM-DD / YYYY_MM_DD)."""
-    date_regex = re.compile(r"\d{4}[-_.]\d{2}[-_.]\d{2}")
-    match = date_regex.search(filepath.with_suffix("").name)
+    """Uses pre-compiled regex and avoids redundant Path ops."""
+    match = _FILENAME_DATE_RE.search(filepath.name)
     if match:
-        date = match.group().replace("_", "-").replace(".", "-")
-        return date  # keep as YYYY-MM-DD for consistency
+        return match.group().replace("_", "-").replace(".", "-")
     return ""
 
 
 def to_german_datetime(time_str: str) -> str:
-    """
-    Convert any recognised log datetime string to German format:
-        DD. Mon YYYY HH:MM:SS
-    Returns the original string unchanged if no format matches.
-    """
     t = time_str.strip()
     for fmt in _DATETIME_FORMATS:
         try:
             dt = datetime.strptime(t, fmt)
-            month_de = _MONTH_MAP[dt.strftime("%b")]
+            month_de = _MONTH_MAP.get(dt.strftime("%b"), dt.strftime("%b"))
             return dt.strftime(f"%d. {month_de} %Y %H:%M:%S")
         except ValueError:
             continue
-    return t  # pass through — visible in CSV so you notice unknown formats
+    return t
 
 
-def build_timestamp(time_str: str, filepath: Path, date_created: str) -> str:
+def build_timestamp(time_str: str, cached_date: str) -> str:
     """
-    Resolve the best possible timestamp from the parsed log time value.
-
-    Priority:
-      1. time_str already contains a full date+time → use as-is
-      2. time_str is time-only → prepend date from filename, else date_created
-      3. Fallback → date_created
+    Accepts a pre-calculated date string instead of a Path object
+    to avoid per-row disk/string logic.
     """
     t = time_str.strip()
-
-    if is_full_datetime(t):
-        return to_german_datetime(t)  # already complete, nothing to add
+    # Check if t already looks like a full date (e.g. starts with 2026 or 15/)
+    if len(t) > 10 and (t[4] == "-" or t[2] == "/"): 
+        return to_german_datetime(t)
 
     if _TIME_ONLY_RE.match(t):
-        date = extract_date_from_filename(filepath) or date_created
-        return to_german_datetime(f"{date} {t}")
+        return to_german_datetime(f"{cached_date} {t}")
 
-    # Unknown format — still try to attach a date
-    date = extract_date_from_filename(filepath) or date_created
-    return to_german_datetime(f"{date} {t}") if t else date_created
+    return to_german_datetime(f"{cached_date} {t}") if t else cached_date
