@@ -24,11 +24,11 @@ from modules.core.pipeline import run_pipeline
 def main() -> None:
     # Search patterns config
     PATTERNS_CONFIG = Path("patterns/patterns.json")
-    PATTERN_KEY = "http_requests_jasperserver"
+    PATTERN_KEY = "catalina_out_jasperserver"
     
     # File(s) to search config
-    FILE_PATTERN = "*.txt"
-    FILES_DIR = Path("logs")
+    FILE_PATTERN = "*.out"
+    FILES_DIR = Path(r"C:\Users\ZaricJ\Downloads\Druckserver Auswertung\NESAS015")
 
     # CSV output
     OUTPUT_DIR = Path("output")
@@ -47,4 +47,3 @@ def main() -> None:
 
 if __name__ == "__main__":
     main()
-

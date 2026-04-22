@@ -47,7 +47,7 @@ def convert_csv_to_excel(input_csv_file: Path, output_excel_file: Path) -> str:
     is_csv_valid = validate_file(input_csv_file)
 
     if is_csv_valid:
-        with Console().status("Converting CSV to Excel, please wait...", spinner="arc"):
+        with Console().status("[bold]>>> Converting CSV to Excel, please wait...", spinner="arc"):
             # Create a new Excel workbook and add a worksheet
             workbook = xlsxwriter.Workbook(str(output_excel_file))
             worksheet = workbook.add_worksheet("Data")

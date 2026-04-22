@@ -1,6 +1,7 @@
 from pathlib import Path
 from rich.console import Console
 from rich.panel import Panel
+from rich import print as rprint
 
 import time
 
@@ -56,6 +57,7 @@ def run_pipeline(
 
     # Write CSV if data was found
     if rows:
+        rprint("[bold]>>> Writing results to csv file...")
         count = write_csv(output_csv, headers, rows)
         excel_msg = convert_csv_to_excel(output_csv, output_csv.with_suffix(".xlsx")) # Convert to excel
         end = time.time() # Process end time

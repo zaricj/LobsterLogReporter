@@ -88,7 +88,7 @@ def collect_rows_and_headers(
                     headers.append(key)
                     headers_seen.add(key)
             rows.append(row)
-
+    rprint(f"[bold]>>> Processed and searched [green]{len(files)} files[/green]...")
     return rows, headers
 
 
