@@ -21,9 +21,9 @@ def display_start_msg(
     event_keyword: str,
 ):
     if not event_keyword:
-        content = f"[bold blue]Pattern config: [/bold blue]{patterns_config}\n[bold blue]Pattern key: [/bold blue]{pattern_key}\n[bold blue]Searching dir: [/bold blue]{files_directory}\n[bold blue]Using pattern: [/bold blue]{file_pattern}"
+        content = f"[bold blue]Pattern config: [/bold blue]{patterns_config}\n[bold blue]Pattern key: [/bold blue]{pattern_key}\n[bold blue]Searching dir: [/bold blue]{files_directory}\n[bold blue]File pattern: [/bold blue]{file_pattern}"
     else:
-        content = f"[bold blue]Pattern config: [/bold blue]{patterns_config}\n[bold blue]Pattern key: [/bold blue]{pattern_key}\n[bold blue]Searching dir: [/bold blue]{files_directory}\n[bold blue]Using pattern: [/bold blue]{file_pattern}\n[bold blue]Event keyword: [/bold blue]{event_keyword}"
+        content = f"[bold blue]Pattern config: [/bold blue]{patterns_config}\n[bold blue]Pattern key: [/bold blue]{pattern_key}\n[bold blue]Searching dir: [/bold blue]{files_directory}\n[bold blue]File pattern: [/bold blue]{file_pattern}\n[bold blue]Event keyword: [/bold blue]{event_keyword}"
     panel = Panel(
         content, title="[bold blue]Starting pipeline task[/bold blue]", expand=False
     )
