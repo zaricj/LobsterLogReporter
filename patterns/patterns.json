@@ -29,7 +29,7 @@
       "separator": "^.*?\\[(?P<time>\\d{2}/\\w{3}/\\d{4}:\\d{2}:\\d{2}:\\d{2})"
     },
     "patterns": {
-      "default": "^(?P<ip>\\S+)\\s(?P<logname>\\S+)\\s(?P<user>\\S+)\\s\\[(?P<timestamp>\\d{2}/\\w{3}/\\d{4}:\\d{2}:\\d{2}:\\d{2})\\s(?P<timezone>[^\\]]+)\\]\\s\"(?P<method>[A-Z]+)\\s(?P<path>\\S+)\\sHTTP\\/(?P<protocol>\\d\\.\\d)\"\\s(?P<status>\\d{3})\\s(?P<size>\\d+)\\s(?P<duration>\\d+)$"
+      "default": "^(?P<ip>(?!127.0.0.1)\\S+)\\s(?P<logname>\\S+)\\s(?P<user>\\S+)\\s\\[(?P<timestamp>\\d{2}/\\w{3}/\\d{4}:\\d{2}:\\d{2}:\\d{2})\\s(?P<timezone>[^\\]]+)\\]\\s\"(?P<method>[A-Z]+)\\s(?P<path>\\S+)\\sHTTP\\/(?P<protocol>\\d\\.\\d)\"\\s(?P<status>\\d{3})\\s(?P<size>\\d+)\\s(?P<duration>\\d+)$"
     }
   },
   "catalina_out_jasperserver": {
