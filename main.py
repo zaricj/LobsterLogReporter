@@ -24,16 +24,15 @@ from modules.core.pipeline import run_pipeline
 def main() -> None:
     # Search patterns config
     PATTERNS_CONFIG = Path("patterns/patterns.json")
-    PATTERN_KEY = "catalina_out_jasperserver"
+    PATTERN_KEY = "http_requests_jasperserver"
     
     # File(s) to search config
-    FILE_PATTERN = "*.out"
-    FILES_DIR = Path(r"C:\Users\ZaricJ\Downloads\Druckserver Auswertung\NESAS015")
-
+    FILE_PATTERN = "*.txt"
+    FILES_DIR = "logs"
     # CSV output
-    OUTPUT_DIR = Path("output")
+    OUTPUT_DIR = "output"
     TIMESTAMP_PREFIX = datetime.now().strftime("%Y_%m_%d")
-    CSV_FILE = OUTPUT_DIR / f"{TIMESTAMP_PREFIX}_{PATTERN_KEY}.csv"
+    CSV_FILE = f"{OUTPUT_DIR}/{TIMESTAMP_PREFIX}_{PATTERN_KEY}.csv"
 
     run_pipeline(
         patterns_config=PATTERNS_CONFIG,

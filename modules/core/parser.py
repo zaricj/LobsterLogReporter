@@ -1,66 +1,27 @@
 import re
-from pathlib import Path
-from tqdm import tqdm
-from typing import (Iterator, Dict)
-
-from modules.io.file_utils import count_lines
-
+from typing import Dict
 
 # ========== Utility ==========
 
-def yield_event_block(filepath: Path, separator_pattern: str | re.Pattern):
-    """Yields the files event block, using a separator pattern
-
-    Args:
-        filepath (Path): The file to read and yield event blocks from
-        separator_pattern (str | re.Pattern): The pattern to identify the start of an event block.
-
-    Yields:
-        str: Yields a block of text, starting from the first matching separator pattern until the next one.
-    """
-
+def yield_event_block(filepath, separator_pattern, progress=None, task_id=None):
     if isinstance(separator_pattern, str):
         separator_pattern = re.compile(separator_pattern)
 
     buffer = []
     with open(filepath, "r", encoding="utf-8") as f:
         for line in f:
-            if separator_pattern.match(line):
-                if buffer:
-                    yield "".join(buffer)
-                    buffer.clear()
+            # Update the progress bar every line
+            if progress and task_id is not None:
+                progress.advance(task_id)
 
-            buffer.append(line)
-
-        if buffer:
-            yield "".join(buffer)
-
-
-def yield_event_block_with_progress(
-    filepath: Path,
-    separator_pattern: re.Pattern,
-    total_lines: int = 0
-) -> Iterator[str]:
-
-    if isinstance(separator_pattern, str):
-        separator_pattern = re.compile(separator_pattern)
-    
-    with open(filepath, "r", encoding="utf-8") as f:
-        
-        if total_lines == 0:
-            total_lines = count_lines(filepath) # Count via func, else use passed
-            
-        buffer: list[str] = []
-
-        for line in tqdm(f, total=total_lines, desc=filepath.name):
             if separator_pattern.match(line):
                 if buffer:
                     yield "".join(buffer)
                     buffer.clear()
             buffer.append(line)
 
-        if buffer:
-            yield "".join(buffer)
+    if buffer:
+        yield "".join(buffer)
 
 
 def extract_matches_from_event_block(event_block: str, compiled_patterns: dict) -> Dict[str, str]:

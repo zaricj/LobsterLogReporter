@@ -1,5 +1,6 @@
 from pathlib import Path
 import time
+import itertools
 from rich.console import Console
 from rich.panel import Panel
 from rich import print as rprint
@@ -8,7 +9,7 @@ from modules.io.converters import str_to_path
 from modules.io.file_utils import get_files_in_folder
 from modules.io.exporters import write_csv, convert_csv_to_excel
 from modules.config.config import load_pattern_search_rule
-from modules.core.utils import collect_rows_and_headers
+from modules.core.utils import collect_rows, collect_headers
 
 CONSOLE = Console()
 
@@ -30,16 +31,14 @@ def display_start_msg(
     CONSOLE.print(panel)
 
 
-def display_finished_msg(
-    output_csv: Path, count: int, total_time: str, excel_msg: str, rows_found: bool
-):
+def display_finished_msg(output_csv: str, excel_filename: str, total_time: str, rows_found: bool):
     """Display completion message with consistent styling."""
 
     if rows_found:
-        content = f"[green]✓ Task has finished in {total_time} seconds\n\nWrote {count} rows to: {output_csv}\n{excel_msg}[/green]"
+        content = f"[green]CSV saved: {output_csv}\nExcel saved: {excel_filename}\n>>> ✓ Task has finished in {total_time} seconds. <<<[/green]"
         title = "[bold green]Success[/bold green]"
     else:
-        content = f"[yellow]No matches were found, nothing to write.\n\nProcess finished in {total_time} seconds.[/yellow]"
+        content = f"[yellow]No matches were found, nothing to write.\n✓ Task has finished in {total_time} seconds.[/yellow]"
         title = "[bold yellow]Warning[/bold yellow]"
 
     panel = Panel(content, title=title, expand=False)
@@ -82,23 +81,32 @@ def run_pipeline(
             f"No files found in {files_directory}, using pattern {file_pattern}"
         )
 
-    # Collect rows + headers in one pass
-    rows, headers = collect_rows_and_headers(
-        files, separator_regex, compiled, event_keyword, show_progress
-    )
+    # Collect rows as generator object
+    row_generator = collect_rows(files, separator_regex, compiled, event_keyword, show_progress)
+    first_row = next(row_generator, None)
 
-    # Normalize headers
-    headers = ["timestamp"] + [h for h in headers if h not in ("time", "timestamp")]
-
-    # Write CSV if data was found
-    if rows:
+    # Check if we actually yielded any data
+    if first_row is not None: 
+        # Collect headers from the extracted first row
+        headers = ["timestamp"] + [h for h in first_row.keys() if h not in ("time", "timestamp")]
+        
+        # 3. Stitch the first row back together with the remaining generator
+        full_generator = itertools.chain([first_row], row_generator)
+        
+        
+        # Pass the stitched generator to your writer
         rprint("[bold]>>> Writing results to csv file...[/bold]")
-        count = write_csv(output_csv, headers, rows)
-        excel_msg = convert_csv_to_excel(
-            output_csv, output_csv.with_suffix(".xlsx")
-        )  # Convert to excel
-        end = time.time()  # Process end time
-        total_time = f"{end - start:.2f}"  # Total time taken
-        display_finished_msg(output_csv, count, total_time, excel_msg, rows_found=True)
+        count = write_csv(output_csv, headers, full_generator)
+        excel_filename = output_csv.with_suffix(".xlsx")
+        
+        rprint(f"[bold green]✓ Writing to csv has finished, wrote [yellow]{count}[/yellow] rows...[/bold green]")
+        convert_csv_to_excel(output_csv, excel_filename)  # Convert to excel
+        rprint("[bold green]✓ CSV converted to excel format.[/bold green]")
+        
+        end = time.time()
+        total_time = f"{end - start:.2f}"
+        display_finished_msg(str(output_csv), str(excel_filename), total_time, True)
     else:
-        display_finished_msg(output_csv, 0, "0", "", rows_found=False)
+        # No rows found
+        display_finished_msg("", "", "0", False) # Adjusted to match your params
+
