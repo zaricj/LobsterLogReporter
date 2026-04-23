@@ -6,36 +6,59 @@ from rich import print as rprint
 
 from modules.io.converters import str_to_path
 from modules.io.file_utils import get_files_in_folder
-from modules.io.exporters import (write_csv, convert_csv_to_excel)
+from modules.io.exporters import write_csv, convert_csv_to_excel
 from modules.config.config import load_pattern_search_rule
 from modules.core.utils import collect_rows_and_headers
 
-def display_finished_msg(output_csv: Path, count: int, total_time: str, excel_msg: str, rows_found: bool):
+CONSOLE = Console()
+
+
+def display_start_msg(
+    patterns_config: str | Path,
+    pattern_key: str,
+    files_directory: str | Path,
+    file_pattern: str,
+    event_keyword: str,
+):
+    if not event_keyword:
+        content = f"[bold blue]Pattern config: [/bold blue]{patterns_config}\n[bold blue]Pattern key: [/bold blue]{pattern_key}\n[bold blue]Searching dir: [/bold blue]{files_directory}\n[bold blue]Using pattern: [/bold blue]{file_pattern}"
+    else:
+        content = f"[bold blue]Pattern config: [/bold blue]{patterns_config}\n[bold blue]Pattern key: [/bold blue]{pattern_key}\n[bold blue]Searching dir: [/bold blue]{files_directory}\n[bold blue]Using pattern: [/bold blue]{file_pattern}\n[bold blue]Event keyword: [/bold blue]{event_keyword}"
+    panel = Panel(
+        content, title="[bold blue]Starting pipeline task[/bold blue]", expand=False
+    )
+    CONSOLE.print(panel)
+
+
+def display_finished_msg(
+    output_csv: Path, count: int, total_time: str, excel_msg: str, rows_found: bool
+):
     """Display completion message with consistent styling."""
-    console = Console()
+
     if rows_found:
         content = f"[green]✓ Task has finished in {total_time} seconds\n\nWrote {count} rows to: {output_csv}\n{excel_msg}[/green]"
         title = "[bold green]Success[/bold green]"
     else:
         content = f"[yellow]No matches were found, nothing to write.\n\nProcess finished in {total_time} seconds.[/yellow]"
         title = "[bold yellow]Warning[/bold yellow]"
-    
+
     panel = Panel(content, title=title, expand=False)
-    console.print(panel)
+    CONSOLE.print(panel)
+
 
 # ========== Pipeline ==========
 
+
 def run_pipeline(
-        patterns_config: str | Path,
-        pattern_key: str,
-        files_directory: str | Path,
-        file_pattern: str,
-        output_csv: str | Path,
-        event_keyword: str = "",
-        show_progress: bool = False
+    patterns_config: str | Path,
+    pattern_key: str,
+    files_directory: str | Path,
+    file_pattern: str,
+    output_csv: str | Path,
+    event_keyword: str = "",
+    show_progress: bool = False,
 ):
-    Console().rule("Starting pipeline task")
-    
+
     # Str to Path conversion if needed
     for i, obj in enumerate([patterns_config, files_directory, output_csv]):
         match i:
@@ -45,8 +68,10 @@ def run_pipeline(
                 files_directory = str_to_path(obj)
             case 2:
                 output_csv = str_to_path(obj)
-    
-    start = time.time() # Process start time
+                
+    display_start_msg(patterns_config, pattern_key, files_directory, file_pattern, event_keyword)
+
+    start = time.time()  # Process start time
 
     compiled, separator_regex = load_pattern_search_rule(patterns_config, pattern_key)
 
@@ -54,7 +79,8 @@ def run_pipeline(
 
     if not files:
         raise ValueError(
-            f"No files found in {files_directory}, using pattern {file_pattern}")
+            f"No files found in {files_directory}, using pattern {file_pattern}"
+        )
 
     # Collect rows + headers in one pass
     rows, headers = collect_rows_and_headers(
@@ -62,16 +88,17 @@ def run_pipeline(
     )
 
     # Normalize headers
-    headers = ["timestamp"] + \
-        [h for h in headers if h not in ("time", "timestamp")]
+    headers = ["timestamp"] + [h for h in headers if h not in ("time", "timestamp")]
 
     # Write CSV if data was found
     if rows:
         rprint("[bold]>>> Writing results to csv file...")
         count = write_csv(output_csv, headers, rows)
-        excel_msg = convert_csv_to_excel(output_csv, output_csv.with_suffix(".xlsx")) # Convert to excel
-        end = time.time() # Process end time
-        total_time = f"{end - start:.2f}" # Total time taken
+        excel_msg = convert_csv_to_excel(
+            output_csv, output_csv.with_suffix(".xlsx")
+        )  # Convert to excel
+        end = time.time()  # Process end time
+        total_time = f"{end - start:.2f}"  # Total time taken
         display_finished_msg(output_csv, count, total_time, excel_msg, rows_found=True)
     else:
         display_finished_msg(output_csv, 0, "0", "", rows_found=False)
