@@ -32,8 +32,8 @@ def main() -> None:
 
     # CSV output
     OUTPUT_DIR = Path("output")
-    TIMESTAMP_PREFIX = datetime.now().strftime("%d_%m_%Y_%H%M%S")
-    CSV_FILE = OUTPUT_DIR / f"Result_{TIMESTAMP_PREFIX}.csv"
+    TIMESTAMP_PREFIX = datetime.now().strftime("%Y_%m_%d")
+    CSV_FILE = OUTPUT_DIR / f"{TIMESTAMP_PREFIX}_{PATTERN_KEY}.csv"
 
     run_pipeline(
         patterns_config=PATTERNS_CONFIG,
