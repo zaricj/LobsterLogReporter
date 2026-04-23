@@ -59,7 +59,7 @@ def collect_rows_and_headers(
         date_created = file["Created"].split("-")[0].strip()
         filename_date = extract_date_from_filename(filepath) or date_created
         
-        rprint(f"Processing: [blue][bold]{filepath.name}[/blue]")
+        rprint(f"Processing: [bold blue]{filepath.name}[/bold blue]")
 
         block_iter = (
             yield_event_block_with_progress(filepath, separator_regex, file["Lines"])
@@ -88,7 +88,7 @@ def collect_rows_and_headers(
                     headers.append(key)
                     headers_seen.add(key)
             rows.append(row)
-    rprint(f"[bold]>>> Processed and searched [green]{len(files)} files[/green]...")
+    rprint(f"[bold]>>> Processed and searched [green]{len(files)}[/green] files...[/bold]")
     return rows, headers
 
 

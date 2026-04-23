@@ -92,7 +92,7 @@ def run_pipeline(
 
     # Write CSV if data was found
     if rows:
-        rprint("[bold]>>> Writing results to csv file...")
+        rprint("[bold]>>> Writing results to csv file...[/bold]")
         count = write_csv(output_csv, headers, rows)
         excel_msg = convert_csv_to_excel(
             output_csv, output_csv.with_suffix(".xlsx")
