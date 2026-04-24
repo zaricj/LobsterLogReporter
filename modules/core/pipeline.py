@@ -83,11 +83,14 @@ def run_pipeline(
         # Pass the stitched generator to the writer
         rprint("[bold]>>> Writing results to csv file...[/bold]")
         count = write_csv(output_csv, headers, full_generator)
-        excel_filename = output_csv.with_suffix(".xlsx")
-        
         rprint(f"[bold green]✓ Writing to csv has finished, wrote [bold yellow]{count}[/bold yellow] rows...[/bold green]")
-        convert_csv_to_excel(output_csv, excel_filename)  # Convert to excel
-        rprint("[bold green]✓ CSV converted to excel format.[/bold green]")
+        
+        if count <= 1_048_576:
+            excel_filename = output_csv.with_suffix(".xlsx")
+            convert_csv_to_excel(output_csv, excel_filename)  # Convert to excel
+            rprint("[bold green]✓ CSV converted to excel format.[/bold green]")
+        else:
+            rprint("[bold yellow]✖ CSV exceeds Excel's 1,048,576 row limit; Conversion to Excel is not possible.")
         
         end = time.time()
         total_time = f"{end - start:.2f}"
