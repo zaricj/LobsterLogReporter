@@ -53,7 +53,7 @@ def convert_csv_to_excel(input_csv_file: Path, output_excel_file: Path):
             sep=';', 
             quotechar='"', 
             encoding='utf-8',
-            engine='c' # Uses the optimized C parser
+            engine='c'
         )
 
         # to_excel handles all type conversions (ints, floats, strings) natively
