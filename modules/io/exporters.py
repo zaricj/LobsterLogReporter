@@ -46,7 +46,7 @@ def convert_csv_to_excel(input_csv_file: Path, output_excel_file: Path):
     if not input_csv_file.exists():
         raise FileNotFoundError("Invalid input file.")
 
-    with CONSOLE.status("[bold]>>> Converting CSV to Excel...", spinner="arc"):
+    with CONSOLE.status("[bold]>>> Converting CSV to Excel...[/bold]", spinner="arc"):
         # read_csv is significantly faster than the csv module for large files
         df = pd.read_csv(
             input_csv_file, 
