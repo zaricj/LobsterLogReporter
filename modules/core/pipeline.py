@@ -91,7 +91,8 @@ def run_pipeline(
             rprint("[bold green]✓ CSV converted to excel format.[/bold green]")
         else:
             rprint("[bold yellow]✖ CSV exceeds Excel's 1,048,576 row limit; Conversion to Excel is not possible.")
-        
+            excel_filename = ""
+            
         end = time.time()
         total_time = f"{end - start:.2f}"
         display_finished_msg(str(output_csv), str(excel_filename), total_time, True)
